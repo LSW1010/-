@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Noto Serif KR', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --color-brand-purple: #7D5A50;
+  --color-brand-amber: #8C8279;
+  
+  --color-theme-bg: #FDFCF8;
+  --color-theme-text: #2D2926;
+  --color-theme-accent: #7D5A50;
+  --color-theme-secondary: #8C8279;
+  --color-theme-border: #E5E1D8;
+  --color-theme-warm: #F2EDE4;
+  --color-theme-warm-deep: #EAE5DB;
+  --color-theme-dark: #2D2926;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5E1D8;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8C8279;
+}
+
+/* CSS Base Transition smooths */
+html {
+  scroll-behavior: smooth;
+  background-color: #FDFCF8;
+  color: #2D2926;
+}
+
+body {
+  background-color: #FDFCF8;
+  color: #2D2926;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom CSS helper for reading blocks */
+.markdown-body p {
+  margin-bottom: 1.25rem;
+  line-height: 1.8;
+  color: #2D2926;
+}
+
+.markdown-body h3 {
+  font-family: 'Noto Serif KR', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin-top: 2rem;
+  margin-bottom: 0.85rem;
+  border-left: 4px solid #7D5A50;
+  padding-left: 0.75rem;
+}
+
+.markdown-body ul, .markdown-body ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.markdown-body li {
+  margin-bottom: 0.5rem;
+  color: #4A4A40;
+  line-height: 1.6;
+}

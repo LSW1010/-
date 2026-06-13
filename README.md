@@ -1,11 +1,73 @@
-<div align="center">
+# 🔮 사주공방 (Saju Gongbang) ─ 브랜드 정보형 콘텐츠 & CMS-lite 정적 웹 패키지
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+사주공방은 수천 년 역사의 격국론, 용신론 등 정통 명리학에 기반하여 불안 조성 및 공포 마케팅이 없는 이성적인 정보 설명문을 전하는 초고품격 미디어 채널입니다.
+본 패키지는 Google의 **E-E-A-T 지침(경험, 전문성, 권위성, 신뢰성)**을 비약적으로 충족하며, **워드프레스 인터페이스 스타일의 가벼운 CMS-lite 관리 데스크**를 내장하여 브라우저 로컬 저장고(`localStorage`)에 콘텐츠를 자유로이 집필, 백업할 수 있는 static-friendly 특화 구조로 빌드되었습니다.
 
-  <h1>Built with AI Studio</h2>
+---
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## 💎 주요 아키텍처 및 강점 요소
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+1. **완결형 지반 콘텐츠 탑재 (15편 이상)**:
+   - 음양오행 하이브리드 입문부터 정밀 격국 수치 배합, 대운 교운기 심리 관리 요체까지 5개 대분류의 완성도 높은 한글 지침서 탑재. No Lorem Ipsum 정책 실현.
+2. **워드프레스 에디터 스타일 CMS 내장**:
+   - `/admin` 경로에서 비밀번호(`admin` 또는 `1234`)를 기표하여 대시보드 진입.
+   - 일반 학술 글 및 함경선 대표 수필 칼럼 추가/수정/삭제를 완벽 지원.
+   - 백업 및 이식성을 극대화하기 위하여 전체 데이터셋을 `.json` 파일로 마스터 백업 및 복원하는 파일 주권 기능 탑재.
+3. **극적인 E-E-A-T 준수 요약**:
+   - 사업체 정보(샵프리 주소, 홈 연락처, 통신판매번호, 이메일 책임자 배치) 고정 및 **개인정보처리방침 / 이용약관 / 면책조항(Disclaimer) / 실시간 HTML Sitemap**의 투명 교차 링크 연결.
+   - 금융, 치료 등 생명 관련 결정(YMYL)의 영구적인 배제 및 수직 개운 행동 방안 제시.
+4. **구조적인 SEO 마크업**:
+   - `Title`, `Description`, `OpenGraph (OG)` 가변 래핑 및 `robots.txt`, `sitemap.xml` 기본 빌드.
+   - 구글 검색 로봇이 일목요연하게 해석할 수 있는 **JSON-LD Schema Markup (Article, FAQ, Breadcrumb)**을 상세 자동 주입.
 
-</div>
+---
+
+## 🛠 수정 및 커스터마이징 핵심 디렉토리
+
+개발 배포 후 브랜드 성격에 따라 텍스트나 설정을 바꾸시려면 아래 파일들을 간단히 수정해 주십시오:
+
+### 1. 사이트 상호 및 기본 비즈니스 정체성
+* **수정 파일 :** `/src/data/siteConfig.ts` 또는 `/src/data/db.ts` 내 Config 파트
+* **수정 가능 파라미터 :**
+  - `siteName` : 사이트 한글 한판명 (기본: "사주공방")
+  - `siteUrl` : 도메인 링크 (기본: "sajugongbang.com")
+  - `ownerName` : 운영 책임 대표자명 (기본: "함경선")
+  - `ownerBio` : 대표자 E-E-A-T 정합성 약력 서술
+  - `contactEmail` : 공식 접수 이메일 주소 (`shopfree0601@naver.com`)
+  - `address`, `phone`, `fax`, `companyName`, `businessNumber` : 하단 푸터 및 법적 명시용 정적 필드들 교환 가능
+
+### 2. 브랜딩 컬러 및 타이포그래피 테마
+* **수정 파일 :**
+  - `/src/index.css` 의 `@theme` 설정 (디스플레이 폰트 페어 설정 가능)
+  - 핵심 강조색은 Tailwind CSS의 주황색 및 딥플럼/앰버 색채를 조합하여 이성적이고 차분한 동양 철학적 톤앤매너로 배치되었습니다.
+
+### 3. 고전 카테고리 구성
+* **수정 파일 :** `/src/data/categories.ts`
+* 학술 고유 ID(`id`), 한글명(`name`), 그리고 검색엔진 해석용 `description`을 한눈에 추가/조정하실 수 있습니다.
+
+### 4. 15편의 디폴트 원본 글귀 마스터 데이터
+* **수정 파일 :** `/src/data/posts.ts`
+* 글의 고유 주소명(`slug`), 제목(`title`), 서브타이틀, 본문 마크다운 포맷 텍스트, 초보자 실수 가이드(`mistakes`), 핵심 체크리스트(`checklist`), 그리고 구조적 FAQ 묶음 데이터의 배열을 포함합니다.
+
+### 5. 대표 함경선의 명리 수필 칼럼집
+* **수정 파일 :** `/src/data/columns.ts`
+* 일반적인 서지 지식 글과 기획 분리되어 감성적인 에세이 및 대표자 정수 메모(`notes`)를 담은 별도 레이아웃용 데이터입니다.
+
+---
+
+## ⚡ 로컬 실행 및 빌드 가이드
+
+본 프로젝트는 초경량 프론트 패키지 매니저 Vite로 빠르고 민첩하게 실행 및 빌드 가능합니다.
+
+```bash
+# 1. 패키지 의존성 일괄 인스톨
+npm install
+
+# 2. 로컬 고성능 개발 서버 구동 (포트 3000 전송 기본 바인딩)
+npm run dev
+
+# 3. 제작 완성용 정적 도정 산출물 빌드
+npm run build
+```
+
+빌드가 완벽 성공하면 `/dist` 디렉토리에 고도로 압축 및 난독화된 청정 정적 파일 세트가 도출됩니다. 이를 그대로 GitHub Pages, Replit, Vercel, Netlify, Cloud Run 등에 즉시 호스팅 배포하시면 곧바로 실제 검색엔진에 자동 반영되는 파워풀한 정보형 사주 도서관이 개설됩니다!
