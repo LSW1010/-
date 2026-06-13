@@ -31,7 +31,6 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-          # Using npm install because some systems have subtle workspace resolution configs
         run: npm install
 
       - name: Build
