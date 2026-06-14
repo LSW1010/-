@@ -23,4 +23,43 @@ export const initialSiteConfig: SiteConfig = {
   consultantLead: '천명',
   consultantLove: '지애',
   consultantBusiness: '금명',
+
+  // Default design colors (from pure styled original index.css)
+  themeBg: '#FDFCF8',
+  themeText: '#2D2926',
+  themeAccent: '#7D5A50',
+  themeSecondary: '#8C8279',
+  themeBorder: '#E5E1D8',
+  themeWarm: '#F2EDE4',
+  themeWarmDeep: '#EAE5DB',
+  themeDark: '#2D2926',
+
+  // Home Page Defaults
+  homeHeroTitle: '당신의 생년월일시,',
+  homeHeroSubtitle: '우주가 프로그래밍한 코드를 해독합니다',
+  homeHeroButtonText: '사주 정보 탐색하기',
+  homeShowHero: true,
+  homeHeroAlign: 'left',
+  homeShowPillars: true,
+  homeShowCategories: true,
+  homeShowSpotlight: true,
+  homeShowBioCard: true,
+  homeShowRecentUpdates: true,
+  homeShowWarningBanner: true,
+  homeShowCTA: true,
+
+  // About Page Defaults
+  aboutTitle: '명리를 빌린 현대인의 수신서',
+  aboutSubtitle: '"사주는 미래의 낙인이 아닌, 나만의 인생 날씨 지도입니다."',
+  aboutShowBreadcrumb: true,
+  aboutShowIdentityHeader: true,
+  aboutShowSection1: true,
+  aboutShowSection2: true,
+  aboutShowSection3: true,
+
+  // Author Page Defaults
+  authorShowHeaderBanner: true,
+  authorShowPrinciples: true,
+  authorShowConsultants: true,
+  authorShowRecentColumns: true,
 };

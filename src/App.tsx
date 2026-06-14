@@ -10,7 +10,7 @@ import AboutView from './components/views/AboutView';
 import ContactView from './components/views/ContactView';
 import TrustViews from './components/views/TrustViews';
 import AdminView from './components/views/AdminView';
-import { setAdminLoggedIn } from './data/db';
+import { setAdminLoggedIn, getSiteConfig } from './data/db';
 import { ShieldAlert, Compass } from 'lucide-react';
 
 export default function App() {
@@ -133,8 +133,39 @@ export default function App() {
   // The Admin page looks cleanest without a duplicate header/footer, so we hide them when rendering '/admin'
   const isCmsLayout = route.main === 'admin';
 
+  const config = getSiteConfig();
+  const themeBg = config.themeBg || '#FDFCF8';
+  const themeText = config.themeText || '#2D2926';
+  const themeAccent = config.themeAccent || '#7D5A50';
+  const themeSecondary = config.themeSecondary || '#8C8279';
+  const themeBorder = config.themeBorder || '#E5E1D8';
+  const themeWarm = config.themeWarm || '#F2EDE4';
+  const themeWarmDeep = config.themeWarmDeep || '#EAE5DB';
+  const themeDark = config.themeDark || '#2D2926';
+
+  const dynamicStyles = `
+    :root {
+      --color-theme-bg: ${themeBg} !important;
+      --color-theme-text: ${themeText} !important;
+      --color-theme-accent: ${themeAccent} !important;
+      --color-theme-secondary: ${themeSecondary} !important;
+      --color-theme-border: ${themeBorder} !important;
+      --color-theme-warm: ${themeWarm} !important;
+      --color-theme-warm-deep: ${themeWarmDeep} !important;
+      --color-theme-dark: ${themeDark} !important;
+    }
+    html, body {
+      background-color: ${themeBg} !important;
+      color: ${themeText} !important;
+    }
+    .markdown-body h3 {
+      border-left-color: ${themeAccent} !important;
+    }
+  `;
+
   return (
     <div className="flex flex-col min-h-screen bg-theme-bg">
+      <style dangerouslySetInnerHTML={{ __html: dynamicStyles }} />
       {!isCmsLayout && (
         <Header
           currentPath={route.main}

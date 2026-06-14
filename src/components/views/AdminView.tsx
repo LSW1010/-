@@ -18,7 +18,9 @@ import {
   RefreshCw,
   LogOut,
   Sparkles,
-  Link2
+  Link2,
+  Palette,
+  Eye
 } from 'lucide-react';
 import {
   getSiteConfig,
@@ -1234,6 +1236,542 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
                     onChange={(e) => setSiteConfig(c => ({ ...c!, businessNumber: e.target.value }))}
                     className="w-full text-xs border rounded p-2 font-mono"
                   />
+                </div>
+
+                <div className="sm:col-span-2 mt-6 pt-6 border-t border-slate-150">
+                  <h3 className="font-serif font-black text-xs sm:text-sm text-slate-900 mb-1 flex items-center gap-1.5 uppercase tracking-wider">
+                    <Sparkles size={14} className="text-amber-500" />
+                    실시간 지반 테마 칼라 설정 (Dynamic Brand Colors System)
+                  </h3>
+                  <p className="text-[10px] sm:text-[11px] text-slate-500 mb-4 font-light leading-relaxed">
+                    디자인 무결성을 지키며 주 테마 색상을 변경할 수 있습니다. 아래 엄선된 동양 철학 테마 프리셋을 클릭하여 즉각 적용하거나, 각각의 색상 값을 정밀하게 수동 오버라이드하여 아름다운 서체 기품을 탄생시켜 조화시킬 수 있습니다.
+                  </p>
+
+                  {/* 엄선된 전통 오행 색채 프리셋 (Aesthetics Color Palette Presets) */}
+                  <div className="mb-6 bg-slate-50 p-4 border border-slate-200 rounded-sm">
+                    <span className="text-[10px] text-amber-600 font-bold uppercase tracking-wider block mb-3 font-mono flex items-center gap-1">
+                      <Palette size={13} className="text-amber-500" />
+                      오행 및 지적 만세력 테마 색채 꾸러미 (PRO-DESIGN COLOR PALETTES)
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {[
+                        {
+                          name: '단향묵즙 (Signature Charcoal Ink)',
+                          description: '단아한 모래 한지 바탕과 숯빛 묵즙이 빚은 디폴트 시그니처',
+                          themeBg: '#FDFCF8',
+                          themeText: '#2D2926',
+                          themeAccent: '#7D5A50',
+                          themeSecondary: '#8C8279',
+                          themeBorder: '#E5E1D8',
+                          themeWarm: '#F2EDE4',
+                          themeWarmDeep: '#EAE5DB',
+                          themeDark: '#2D2926',
+                        },
+                        {
+                          name: '청송비취 (Bamboo Sage Garden)',
+                          description: '목(木)의 청아한 바람과 안식을 대별하는 담백한 푸른 대숲색',
+                          themeBg: '#F4F7F5',
+                          themeText: '#1C2E24',
+                          themeAccent: '#2D6A4F',
+                          themeSecondary: '#587063',
+                          themeBorder: '#D8E2DC',
+                          themeWarm: '#E8F0EC',
+                          themeWarmDeep: '#DCE6E1',
+                          themeDark: '#1C2E24',
+                        },
+                        {
+                          name: '자광유금 (Imperial Purple Majesty)',
+                          description: '황금과 자줏빛의 궁합으로 귀인(貴人)의 번영을 불러오는 자안색',
+                          themeBg: '#FAF6F8',
+                          themeText: '#2C1A24',
+                          themeAccent: '#8A2C5B',
+                          themeSecondary: '#705565',
+                          themeBorder: '#E8D5E0',
+                          themeWarm: '#F4EBF0',
+                          themeWarmDeep: '#EBDFE5',
+                          themeDark: '#2C1A24',
+                        },
+                        {
+                          name: '심연묵객 (Mystic Midnight Noir)',
+                          description: '수(水)의 깊은 통찰력과 은묘한 은하수의 우주를 담은 고위도 다크색',
+                          themeBg: '#121214',
+                          themeText: '#ECE7E1',
+                          themeAccent: '#CD9A2B',
+                          themeSecondary: '#8F8B85',
+                          themeBorder: '#2E2B2D',
+                          themeWarm: '#1B191C',
+                          themeWarmDeep: '#232125',
+                          themeDark: '#ECE7E1',
+                        },
+                        {
+                          name: '홍련화염 (Cinnabar Brick Red)',
+                          description: '화(火)의 열정이자 따스함과 온기를 발포하는 활력적인 단토 적갈색',
+                          themeBg: '#FDFBFA',
+                          themeText: '#2A1F1D',
+                          themeAccent: '#C13B22',
+                          themeSecondary: '#8F7773',
+                          themeBorder: '#F0E3E0',
+                          themeWarm: '#F7ECE9',
+                          themeWarmDeep: '#EED9D5',
+                          themeDark: '#2A1F1D',
+                        }
+                      ].map((preset, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            setSiteConfig(c => {
+                              if (!c) return c;
+                              return {
+                                ...c,
+                                themeBg: preset.themeBg,
+                                themeText: preset.themeText,
+                                themeAccent: preset.themeAccent,
+                                themeSecondary: preset.themeSecondary,
+                                themeBorder: preset.themeBorder,
+                                themeWarm: preset.themeWarm,
+                                themeWarmDeep: preset.themeWarmDeep,
+                                themeDark: preset.themeDark,
+                              };
+                            });
+                            triggerStatus(`"${preset.name}" 색상 조합 테마가 입력란에 수혈되었습니다.`);
+                          }}
+                          className="text-left bg-white hover:bg-amber-50/20 border border-slate-200 hover:border-amber-500 rounded p-3 transition-all duration-150 group flex flex-col justify-between h-[104px]"
+                        >
+                          <div>
+                            <div className="flex justify-between items-center mb-0.5">
+                              <span className="text-[11px] font-bold text-slate-800 group-hover:text-amber-700 transition font-serif leading-tight">
+                                {preset.name}
+                              </span>
+                            </div>
+                            <p className="text-[9px] text-slate-400 line-clamp-2 leading-relaxed scale-95 origin-left">{preset.description}</p>
+                          </div>
+                          
+                          {/* Mini visual swatch indicator */}
+                          <div className="flex gap-1 mt-2">
+                            {[
+                              { label: '배경', color: preset.themeBg },
+                              { label: '글씨', color: preset.themeText },
+                              { label: '요소', color: preset.themeAccent },
+                              { label: '음영', color: preset.themeWarm }
+                            ].map((sw, sIdx) => (
+                              <div
+                                key={sIdx}
+                                className="flex items-center gap-0.5 border border-slate-100 rounded px-1 py-0.5 bg-slate-50 text-[7px] font-mono shrink-0 shadow-3xs"
+                              >
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full inline-block border border-black/10 shrink-0"
+                                  style={{ backgroundColor: sw.color }}
+                                />
+                                <span className="text-slate-500 scale-90">{sw.label}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* 정밀 수동 입력 폼 색상 (Precision Color Parameter Inputs) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+                    <div>
+                      <label className="block text-[10px] text-slate-600 font-bold mb-1">기본 배경색 (theme-bg)</label>
+                      <input
+                        type="text"
+                        placeholder="#FAF7F2"
+                        value={siteConfig.themeBg || ''}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, themeBg: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 font-mono text-slate-800 focus:ring-1 focus:ring-amber-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-slate-600 font-bold mb-1">기본 텍스트색 (theme-text)</label>
+                      <input
+                        type="text"
+                        placeholder="#2D2926"
+                        value={siteConfig.themeText || ''}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, themeText: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 font-mono text-slate-800 focus:ring-1 focus:ring-amber-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-slate-600 font-bold mb-1">대표 포인트 강렬색 (theme-accent)</label>
+                      <input
+                        type="text"
+                        placeholder="#7D5A50"
+                        value={siteConfig.themeAccent || ''}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, themeAccent: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 font-mono text-slate-800 focus:ring-1 focus:ring-amber-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-slate-600 font-bold mb-1">설명 부제 회색 (theme-secondary)</label>
+                      <input
+                        type="text"
+                        placeholder="#555555"
+                        value={siteConfig.themeSecondary || ''}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, themeSecondary: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 font-mono text-slate-800 focus:ring-1 focus:ring-amber-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-slate-600 font-bold mb-1">경계 테두리선 (theme-border)</label>
+                      <input
+                        type="text"
+                        placeholder="#E5E1D8"
+                        value={siteConfig.themeBorder || ''}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, themeBorder: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 font-mono text-slate-800 focus:ring-1 focus:ring-amber-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-slate-600 font-bold mb-1">보조 배경 박스색 (theme-warm)</label>
+                      <input
+                        type="text"
+                        placeholder="#FAF6F0"
+                        value={siteConfig.themeWarm || ''}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, themeWarm: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 font-mono text-slate-800 focus:ring-1 focus:ring-amber-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 실시간 뷰 미리보기 시뮬레이터 (LIVE BRAND EXPERIENCE PREVIEW MOCKUP) */}
+                  <div className="border border-slate-200 rounded p-4 bg-slate-50/50">
+                    <span className="text-[10px] text-amber-600 font-bold uppercase tracking-wider block mb-2 font-mono flex items-center gap-1">
+                      <Eye size={12} className="text-amber-500" />
+                      실시간 디자인 컴포넌트 동경 미리보기 (VIRTUAL COMPONENT MOCKUP)
+                    </span>
+                    <p className="text-[9px] text-slate-400 mb-4 scale-95 origin-left leading-normal">
+                      아래 미니어처 시판은 현재 조율 중인 색채 수치로 즉각 수렴하여 서체 및 가시성이 흐트러지는지 먼저 감정할 수 있도록 조력하는 시뮬레이터입니다.
+                    </p>
+
+                    {/* Simulation frame with dynamic bounding */}
+                    <div
+                      className="border rounded-sm p-4 text-left transition-all duration-350 shadow-xs max-w-2xl mx-auto"
+                      style={{
+                        backgroundColor: siteConfig.themeBg || '#FDFCF8',
+                        borderColor: siteConfig.themeBorder || '#E5E1D8',
+                        color: siteConfig.themeText || '#2D2926'
+                      }}
+                    >
+                      {/* Mini navbar mockup */}
+                      <div
+                        className="flex justify-between items-center pb-2 border-b text-[8px] font-sans font-bold uppercase tracking-wider mb-3.5"
+                        style={{ borderColor: siteConfig.themeBorder || '#E5E1D8' }}
+                      >
+                        <div className="flex items-center gap-1 font-serif">
+                          <span
+                            className="w-2 h-2 rounded-xs"
+                            style={{ backgroundColor: siteConfig.themeAccent || '#7D5A50' }}
+                          />
+                          <span style={{ color: siteConfig.themeText || '#2D2926' }}>사주공방 미리보기</span>
+                        </div>
+                        <div className="flex gap-2.5" style={{ color: siteConfig.themeSecondary || '#8C8279' }}>
+                          <span>홈</span>
+                          <span>소개</span>
+                          <span>고문칼럼</span>
+                        </div>
+                      </div>
+
+                      {/* Content simulated body */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="sm:col-span-2 space-y-2">
+                          <div className="flex flex-wrap gap-1 items-center">
+                            <span
+                              className="text-[8px] px-1.5 py-0.5 rounded-xs font-bold border"
+                              style={{
+                                backgroundColor: siteConfig.themeWarm || '#F2EDE4',
+                                borderColor: siteConfig.themeBorder || '#E5E1D8',
+                                color: siteConfig.themeAccent || '#7D5A50'
+                              }}
+                            >
+                              ★ 금주의 추천 에세이
+                            </span>
+                            <span className="text-[7.5px] scale-90 text-slate-400 font-mono">13분 전 칼날 교정</span>
+                          </div>
+
+                          <h4
+                            className="font-serif font-black text-xs leading-snug sm:text-sm tracking-tight"
+                            style={{ color: siteConfig.themeText || '#2D2926' }}
+                          >
+                            성격의 한랭함과 건조함을 메우는 조후(調候)론의 이치
+                          </h4>
+
+                          <p
+                            className="text-[9.5px] leading-relaxed line-clamp-3 font-medium"
+                            style={{ color: siteConfig.themeSecondary || '#8C8279' }}
+                          >
+                            사주의 수(水)가 범람하여 마음이 시베리아 빙벽처럼 차갑게 동결될 때는, 비난을 퍼붓는 신점보다는 목(木)과 화(火)의 온기 어린 성격을 체현하려 부드럽게 대화를 고치는 태도가 가장 맑은 개운 책략이 됩니다.
+                          </p>
+                        </div>
+
+                        {/* Traditional styled mini board card widget */}
+                        <div
+                          className="border rounded-sm p-3 flex flex-col justify-between"
+                          style={{
+                            backgroundColor: siteConfig.themeWarm || '#F2EDE4',
+                            borderColor: siteConfig.themeBorder || '#E5E1D8'
+                          }}
+                        >
+                          <div className="space-y-1">
+                            <h5
+                              className="font-serif font-bold text-[10px] leading-tight"
+                              style={{ color: siteConfig.themeText || '#2D2926' }}
+                            >
+                              대표 함경선 올림
+                            </h5>
+                            <p
+                              className="text-[8.5px] leading-relaxed scale-95 origin-top-left text-justify font-semibold"
+                              style={{ color: siteConfig.themeSecondary || '#8C8279' }}
+                            >
+                              액운과 저주를 멀리하십시오. 지혜로운 조율이 함께합니다.
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            className="w-full mt-2.5 py-1.5 rounded-xs text-[8px] font-bold tracking-wider text-center cursor-default shrink-0"
+                            style={{
+                              backgroundColor: siteConfig.themeAccent || '#7D5A50',
+                              color: '#FFFFFF'
+                            }}
+                          >
+                            조력 신청반 안내
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Mockup footer signature line */}
+                      <p
+                        className="mt-3.5 pt-2 border-t text-center text-[7.5px] font-black scale-95 origin-center font-sans tracking-wide"
+                        style={{
+                          borderColor: siteConfig.themeBorder || '#E5E1D8',
+                          color: siteConfig.themeSecondary || '#8C8279'
+                        }}
+                      >
+                        "인생의 세찬 눈망울 속에서, 따스하게 전등을 밝히고 순리를 마주하십시오."
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2 mt-6 pt-6 border-t border-slate-150 space-y-6">
+                  <div>
+                    <h3 className="font-serif font-black text-xs sm:text-sm text-slate-900 mb-1 flex items-center gap-1.5 uppercase tracking-wider">
+                      <LayoutDashboard size={14} className="text-amber-500" />
+                      전체 화면 모듈식 노출 제어 (Design Sections Modularization Control)
+                    </h3>
+                    <p className="text-[10px] sm:text-[11px] text-slate-500 font-light leading-relaxed">
+                      각 페이지별로 기획된 UI 요소와 서술 모듈의 표시 여부를 체크 박스로 즉각 활성/비활성화하여 개인 맞춤형 사이트로 슬림하게 변모시킵니다.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {/* Home page toggles */}
+                    <div className="bg-slate-50 p-4 rounded-sm border border-slate-200">
+                      <span className="text-[10px] text-amber-600 font-bold uppercase tracking-wider block mb-3 font-mono">
+                        홈페이지 뷰 섹션 제어 (Home View Modules)
+                      </span>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.homeShowHero !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, homeShowHero: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          히어로 환영 성채
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.homeShowPillars !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, homeShowPillars: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          3가지 핵심 신조
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.homeShowCategories !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, homeShowCategories: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          대표 학술 카테고리
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.homeShowSpotlight !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, homeShowSpotlight: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          필자 수필 스포트라이트
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.homeShowBioCard !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, homeShowBioCard: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          상단 함경선 명함 카드
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.homeShowRecentUpdates !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, homeShowRecentUpdates: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          최신 업데이트 정량 목록
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.homeShowWarningBanner !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, homeShowWarningBanner: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          안전 면책 철학 배너
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.homeShowCTA !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, homeShowCTA: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          과욕 타개 상담신청 푸터
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* About page toggles */}
+                    <div className="bg-slate-50 p-4 rounded-sm border border-slate-200 space-y-3">
+                      <span className="text-[10px] text-amber-600 font-bold uppercase tracking-wider block font-mono">
+                        브랜드 소개 뷰 섹션 제어 및 텍스트 (About View Settings)
+                      </span>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-2 mb-2 border-b border-slate-100">
+                        <div>
+                          <label className="block text-[9px] text-slate-600 font-bold mb-1">대표 소개글 타이틀 커스텀</label>
+                          <input
+                            type="text"
+                            placeholder="명리를 빌린 현대인의 수신서"
+                            value={siteConfig.aboutTitle || ''}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, aboutTitle: e.target.value }))}
+                            className="w-full text-xs border rounded p-1.5 focus:ring-1 focus:ring-amber-500 text-slate-800"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[9px] text-slate-600 font-bold mb-1">대표 소개글 하단 서브타이틀 커스텀</label>
+                          <input
+                            type="text"
+                            placeholder='사주는 미래의 낙인이 아닌, 나만의 인생 날씨 지도입니다.'
+                            value={siteConfig.aboutSubtitle || ''}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, aboutSubtitle: e.target.value }))}
+                            className="w-full text-xs border rounded p-1.5 focus:ring-1 focus:ring-amber-500 text-slate-800"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.aboutShowBreadcrumb !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, aboutShowBreadcrumb: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          소개 경로 네비 (Breadcrumb)
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.aboutShowIdentityHeader !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, aboutShowIdentityHeader: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          브랜드 기치 헤더
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.aboutShowSection1 !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, aboutShowSection1: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          Section 1. 브랜드 탄생
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.aboutShowSection2 !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, aboutShowSection2: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          Section 2. 미신 구분 잣대
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.aboutShowSection3 !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, aboutShowSection3: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          Section 3. 고문 자문 협회
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Author page toggles */}
+                    <div className="bg-slate-50 p-4 rounded-sm border border-slate-200 font-medium">
+                      <span className="text-[10px] text-amber-600 font-bold uppercase tracking-wider block mb-3 font-mono">
+                        필자 소개 뷰 섹션 제어 (Author View Settings)
+                      </span>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.authorShowHeaderBanner !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, authorShowHeaderBanner: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          저자 대표 소개 포스터
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.authorShowPrinciples !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, authorShowPrinciples: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          필독 3대 학술 집필 원칙
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.authorShowConsultants !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, authorShowConsultants: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          공방 전속 자문단 목록
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium select-none">
+                          <input
+                            type="checkbox"
+                            checked={siteConfig.authorShowRecentColumns !== false}
+                            onChange={(e) => setSiteConfig(c => ({ ...c!, authorShowRecentColumns: e.target.checked }))}
+                            className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          />
+                          경선 대표자 최근 에세이함
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
