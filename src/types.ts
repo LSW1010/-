@@ -44,6 +44,12 @@ export interface Category {
   slug: string;
 }
 
+export interface MenuItem {
+  id: string;
+  name: string;
+  path: string;
+}
+
 export interface SiteConfig {
   siteName: string;
   tagline: string;

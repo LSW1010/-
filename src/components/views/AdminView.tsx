@@ -20,7 +20,9 @@ import {
   Sparkles,
   Link2,
   Palette,
-  Eye
+  Eye,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import {
   getSiteConfig,
@@ -37,9 +39,11 @@ import {
   saveAdminPassword,
   resetToDefault,
   exportAllData,
-  importAllData
+  importAllData,
+  getMenuItems,
+  saveMenuItems
 } from '../../data/db';
-import { Post, Column, Category, SiteConfig, FAQ } from '../../types';
+import { Post, Column, Category, SiteConfig, FAQ, MenuItem } from '../../types';
 
 interface AdminViewProps {
   onStateChange: () => void;
@@ -60,12 +64,23 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
   const [posts, setPosts] = React.useState<Post[]>([]);
   const [columns, setColumns] = React.useState<Column[]>([]);
   const [categories, setCategories] = React.useState<Category[]>([]);
+  const [menuItems, setMenuItems] = React.useState<MenuItem[]>([]);
   const [siteConfig, setSiteConfig] = React.useState<SiteConfig | null>(null);
 
   // Editing state trackers
   const [editingPost, setEditingPost] = React.useState<Partial<Post> | null>(null);
   const [editingColumn, setEditingColumn] = React.useState<Partial<Column> | null>(null);
   const [isCreatingNew, setIsCreatingNew] = React.useState(false);
+
+  // Category editing state
+  const [editingCatId, setEditingCatId] = React.useState<string | null>(null);
+  const [catForm, setCatForm] = React.useState({ id: '', name: '', description: '', slug: '' });
+  const [newCatOpen, setNewCatOpen] = React.useState(false);
+
+  // Menu editing state
+  const [editingMenuId, setEditingMenuId] = React.useState<string | null>(null);
+  const [menuForm, setMenuForm] = React.useState({ id: '', name: '', path: '' });
+  const [newMenuOpen, setNewMenuOpen] = React.useState(false);
 
   // Form lists values (checklist, mistakes, faqs)
   const [currentFaqQ, setCurrentFaqQ] = React.useState('');
@@ -135,6 +150,7 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
     setPosts(getPosts());
     setColumns(getColumns());
     setCategories(getCategories());
+    setMenuItems(getMenuItems());
     setSiteConfig(getSiteConfig());
   };
 
@@ -319,6 +335,128 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
     }
   };
 
+  // Category Actions
+  const handleSaveCategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!catForm.name || !catForm.slug) {
+      triggerStatus('이름과 슬러그는 필수 입력입니다.', 'error');
+      return;
+    }
+
+    let updated: Category[];
+    if (editingCatId) {
+      // Editing
+      updated = categories.map(c => c.id === editingCatId ? { ...c, ...catForm } : c);
+      triggerStatus('카테고리 정보가 수정되었습니다.');
+    } else {
+      // Adding new
+      const newId = catForm.id || `category-${Date.now()}`;
+      if (categories.some(c => c.id === newId || c.slug === catForm.slug)) {
+        triggerStatus('이미 존재하는 카테고리 ID 혹은 슬러그입니다.', 'error');
+        return;
+      }
+      const newCat: Category = {
+        id: newId,
+        name: catForm.name,
+        description: catForm.description,
+        slug: catForm.slug
+      };
+      updated = [...categories, newCat];
+      triggerStatus('새로운 카테고리가 등록되었습니다.');
+    }
+
+    setCategories(updated);
+    saveCategories(updated);
+    setEditingCatId(null);
+    setNewCatOpen(false);
+    setCatForm({ id: '', name: '', description: '', slug: '' });
+    onStateChange();
+  };
+
+  const handleDeleteCategory = (id: string) => {
+    if (window.confirm('이 카테고리를 정말 삭제하시겠습니까? 연결된 게시글이 있는 경우 카테고리 매칭이 해제될 수 있습니다.')) {
+      const updated = categories.filter(c => c.id !== id);
+      setCategories(updated);
+      saveCategories(updated);
+      triggerStatus('카테고리가 삭제되었습니다.');
+      onStateChange();
+    }
+  };
+
+  const handleMoveCategory = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === categories.length - 1) return;
+
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    const updated = [...categories];
+    const border = updated[index];
+    updated[index] = updated[targetIndex];
+    updated[targetIndex] = border;
+
+    setCategories(updated);
+    saveCategories(updated);
+    triggerStatus('카테고리 순서가 조정되었습니다.');
+    onStateChange();
+  };
+
+  // Menu Items Actions
+  const handleSaveMenuItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!menuForm.name || !menuForm.path) {
+      triggerStatus('메뉴 이름과 이동 경로는 필수 항목입니다.', 'error');
+      return;
+    }
+
+    let updated: MenuItem[];
+    if (editingMenuId) {
+      // Editing
+      updated = menuItems.map(m => m.id === editingMenuId ? { ...m, ...menuForm } : m);
+      triggerStatus('메뉴 정보가 수정되었습니다.');
+    } else {
+      // Adding new
+      const newMenu: MenuItem = {
+        id: `menu-${Date.now()}`,
+        name: menuForm.name,
+        path: menuForm.path
+      };
+      updated = [...menuItems, newMenu];
+      triggerStatus('새로운 메뉴가 등록되었습니다.');
+    }
+
+    setMenuItems(updated);
+    saveMenuItems(updated);
+    setEditingMenuId(null);
+    setNewMenuOpen(false);
+    setMenuForm({ id: '', name: '', path: '' });
+    onStateChange();
+  };
+
+  const handleDeleteMenuItem = (id: string) => {
+    if (window.confirm('이 메뉴 항목을 정말 삭제하시겠습니까?')) {
+      const updated = menuItems.filter(m => m.id !== id);
+      setMenuItems(updated);
+      saveMenuItems(updated);
+      triggerStatus('메뉴 항목이 삭제되었습니다.');
+      onStateChange();
+    }
+  };
+
+  const handleMoveMenuItem = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === menuItems.length - 1) return;
+
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    const updated = [...menuItems];
+    const temp = updated[index];
+    updated[index] = updated[targetIndex];
+    updated[targetIndex] = temp;
+
+    setMenuItems(updated);
+    saveMenuItems(updated);
+    triggerStatus('메뉴 순서가 조정되었습니다.');
+    onStateChange();
+  };
+
   // Backup and Restore Actions (JSON format)
   const handleJsonExport = () => {
     try {
@@ -497,7 +635,7 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
               activeTab === 'categories' ? 'text-amber-500 bg-slate-800' : 'hover:bg-slate-810 hover:text-white'
             }`}
           >
-            <FolderOpen size={14} /> 카테고리 구조 보기
+            <FolderOpen size={14} /> 카테고리 & 페이지 메뉴 관리
           </button>
 
           <button
@@ -1120,31 +1258,366 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
           </div>
         )}
 
-        {/* ==================== E. CATEGORIES LIST VIEW ==================== */}
+        {/* ==================== E. CATEGORIES & MENU ITEMS LIST VIEW ==================== */}
         {activeTab === 'categories' && (
-          <div className="space-y-6 animate-fade-in max-w-4xl">
-            <div>
-              <h1 className="text-xl font-serif font-bold text-slate-900">명리학 정밀 카테고리 구조</h1>
-              <p className="text-xs text-slate-500 mt-1">사주공방의 5대 핵심 지반 카테고리 계통의 설명과 고정 메타입니다.</p>
+          <div className="space-y-12 animate-fade-in max-w-6xl">
+            
+            {/* 상단 통합 안내 */}
+            <div className="border-b border-slate-200 pb-5">
+              <h1 className="text-xl font-serif font-bold text-slate-900">카테고리 및 상단 페이지 메뉴 권한 설정</h1>
+              <p className="text-xs text-slate-500 mt-1">
+                사주공방의 학술 분류 기둥(카테고리) 및 방문객이 열람하는 상단 헤더 메뉴의 순서와 추가/변경을 총괄합니다.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {categories.map(c => {
-                const count = posts.filter(p => p.category === c.id).length;
-                return (
-                  <div key={c.id} className="bg-white p-5 rounded-xl border border-slate-200">
-                    <span className="text-[10px] text-indigo-650 bg-indigo-50 px-2 py-0.5 rounded uppercase font-semibold">
-                      총 {count}편의 글 연결
-                    </span>
-                    <h3 className="font-serif font-bold text-slate-900 text-md mt-2 mb-1">{c.name}</h3>
-                    <p className="text-slate-400 text-[10px] font-mono">ID: {c.id}</p>
-                    <p className="text-slate-500 text-xs font-light leading-relaxed mt-2 border-t pt-2">
-                      {c.description}
-                    </p>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
+              {/* Left Column: Categories management (7 cols) */}
+              <div className="lg:col-span-7 space-y-6">
+                <div className="flex justify-between items-center bg-slate-50 p-4 border border-slate-200 rounded-sm">
+                  <div>
+                    <h2 className="text-xs uppercase font-serif font-black text-amber-700 tracking-wider">
+                      학술 분류 카테고리 구성 ({categories.length})
+                    </h2>
+                    <p className="text-[10px] text-slate-400 mt-0.5">명리 연구서 및 칼럼 연결의 핵심 뼈대입니다.</p>
                   </div>
-                );
-              })}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewCatOpen(!newCatOpen);
+                      setEditingCatId(null);
+                      setCatForm({ id: '', name: '', description: '', slug: '' });
+                    }}
+                    className="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-bold flex items-center gap-1 transition"
+                  >
+                    <Plus size={12} />
+                    {newCatOpen ? '입력 닫기' : '새 카테고리 추가'}
+                  </button>
+                </div>
+
+                {/* Category Adding/Editing Form */}
+                {(newCatOpen || editingCatId) && (
+                  <form
+                    onSubmit={handleSaveCategory}
+                    className="bg-amber-50/15 border border-amber-200 rounded p-4 space-y-3.5"
+                  >
+                    <span className="text-[10px] font-extrabold text-amber-700 uppercase tracking-wider block font-mono">
+                      {editingCatId ? '★ 카테고리 내용 수정 중' : '★ 신규 학술 카테고리 등록'}
+                    </span>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-600 mb-1">카테고리 고유 ID *</label>
+                        <input
+                          type="text"
+                          disabled={!!editingCatId}
+                          placeholder="예: ten-gods"
+                          value={catForm.id}
+                          onChange={(e) => setCatForm(prev => ({ ...prev, id: e.target.value }))}
+                          className="w-full text-xs border rounded p-2 bg-white disabled:bg-slate-100 placeholder:text-slate-300"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-600 mb-1">카테고리 슬러그 (URL용) *</label>
+                        <input
+                          type="text"
+                          placeholder="예: ten-gods"
+                          value={catForm.slug}
+                          onChange={(e) => setCatForm(prev => ({ ...prev, slug: e.target.value }))}
+                          className="w-full text-xs border rounded p-2 bg-white placeholder:text-slate-300"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-600 mb-1">카테고리 한글 전시명 *</label>
+                      <input
+                        type="text"
+                        placeholder="예: 십성론 (十星論)"
+                        value={catForm.name}
+                        onChange={(e) => setCatForm(prev => ({ ...prev, name: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 bg-white placeholder:text-slate-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-600 mb-1">학술 배경 설명란</label>
+                      <textarea
+                        rows={2}
+                        placeholder="카테고리를 대별하는 깊이 있는 설명을 입력하세요."
+                        value={catForm.description}
+                        onChange={(e) => setCatForm(prev => ({ ...prev, description: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 bg-white placeholder:text-slate-300"
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-2 pt-2 border-t border-amber-100">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingCatId(null);
+                          setNewCatOpen(false);
+                        }}
+                        className="px-2.5 py-1 text-slate-500 text-xs hover:bg-slate-100 rounded"
+                      >
+                        취소
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-3.5 py-1 bg-slate-900 text-white rounded text-xs font-bold hover:bg-slate-800"
+                      >
+                        {editingCatId ? '변경 사항 적용' : '카테고리 등록'}
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {/* Categories List */}
+                <div className="space-y-3">
+                  {categories.map((c, idx) => {
+                    const count = posts.filter(p => p.category === c.id).length;
+                    return (
+                      <div
+                        key={c.id}
+                        className="bg-white p-4 border border-slate-200 rounded shadow-3xs flex flex-col justify-between"
+                      >
+                        <div className="flex justify-between items-start gap-2">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-serif font-bold text-slate-900 text-sm leading-tight">{c.name}</h3>
+                              <span className="text-[8px] bg-indigo-50 border border-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono">
+                                {count}편 연결됨
+                              </span>
+                            </div>
+                            <p className="text-slate-400 text-[8.5px] font-mono mt-0.5">ID: {c.id} &nbsp;|&nbsp; 슬러그: {c.slug}</p>
+                            <p className="text-slate-500 text-[11px] font-light leading-relaxed mt-2 block">
+                              {c.description}
+                            </p>
+                          </div>
+
+                          {/* Reordering and Editing controls */}
+                          <div className="flex flex-col gap-1 shrink-0">
+                            <div className="flex gap-1">
+                              <button
+                                type="button"
+                                disabled={idx === 0}
+                                onClick={() => handleMoveCategory(idx, 'up')}
+                                className="p-1 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded disabled:opacity-30 disabled:pointer-events-none"
+                                title="위로 이동"
+                              >
+                                <ArrowUp size={11} />
+                              </button>
+                              <button
+                                type="button"
+                                disabled={idx === categories.length - 1}
+                                onClick={() => handleMoveCategory(idx, 'down')}
+                                className="p-1 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded disabled:opacity-30 disabled:pointer-events-none"
+                                title="아래로 이동"
+                              >
+                                <ArrowDown size={11} />
+                              </button>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingCatId(c.id);
+                                setNewCatOpen(false);
+                                setCatForm({
+                                  id: c.id,
+                                  name: c.name,
+                                  description: c.description,
+                                  slug: c.slug
+                                });
+                              }}
+                              className="px-1.5 py-0.5 border border-amber-300 text-amber-700 hover:bg-amber-50 rounded text-[9px] leading-none text-center font-bold"
+                            >
+                              수정
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteCategory(c.id)}
+                              className="px-1.5 py-0.5 border border-rose-300 text-rose-700 hover:bg-rose-50 rounded text-[9px] leading-none text-center font-bold"
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+
+              {/* Right Column: Page Menu configuration (5 cols) */}
+              <div className="lg:col-span-5 space-y-6">
+                <div className="flex justify-between items-center bg-slate-50 p-4 border border-slate-200 rounded-sm">
+                  <div>
+                    <h2 className="text-xs uppercase font-serif font-black text-amber-700 tracking-wider">
+                      상단 네비게이션 메뉴 구성 ({menuItems.length})
+                    </h2>
+                    <p className="text-[10px] text-slate-400 mt-0.5">상단 헤더에 보일 페이지 탭을 관리합니다.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewMenuOpen(!newMenuOpen);
+                      setEditingMenuId(null);
+                      setMenuForm({ id: '', name: '', path: '' });
+                    }}
+                    className="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-bold flex items-center gap-1 transition"
+                  >
+                    <Plus size={12} />
+                    {newMenuOpen ? '닫기' : '메뉴 추가'}
+                  </button>
+                </div>
+
+                {/* MenuItem Adding/Editing Form */}
+                {(newMenuOpen || editingMenuId) && (
+                  <form
+                    onSubmit={handleSaveMenuItem}
+                    className="bg-amber-50/15 border border-amber-200 rounded p-4 space-y-3.5"
+                  >
+                    <span className="text-[10px] font-extrabold text-amber-700 uppercase tracking-wider block font-mono">
+                      {editingMenuId ? '★ 메뉴 항목 수정 중' : '★ 신규 상단 메뉴 추가'}
+                    </span>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-600 mb-1">메뉴 표시 이름 *</label>
+                      <input
+                        type="text"
+                        placeholder="예: 상담 가이드"
+                        value={menuForm.name}
+                        onChange={(e) => setMenuForm(prev => ({ ...prev, name: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 bg-white placeholder:text-slate-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-600 mb-1">전시 페이지 경로 (Path) *</label>
+                      <input
+                        type="text"
+                        placeholder="예: home, columns, categories, about, contact 또는 custom"
+                        value={menuForm.path}
+                        onChange={(e) => setMenuForm(prev => ({ ...prev, path: e.target.value }))}
+                        className="w-full text-xs border rounded p-2 bg-white placeholder:text-slate-300"
+                      />
+                      
+                      {/* Quick recommendations helper */}
+                      <div className="mt-1.5 flex flex-wrap gap-1.5 items-center">
+                        <span className="text-[8px] text-slate-400 block font-sans mr-1">빠른 추천:</span>
+                        {[
+                          { label: '홈', path: 'home' },
+                          { label: '에세이', path: 'columns' },
+                          { label: '카테고리', path: 'categories' },
+                          { label: '소개', path: 'about' },
+                          { label: '상담가', path: 'author' },
+                          { label: '문의', path: 'contact' }
+                        ].map((rec, rIdx) => (
+                          <button
+                            key={rIdx}
+                            type="button"
+                            onClick={() => setMenuForm(prev => ({ ...prev, path: rec.path, name: prev.name || rec.label }))}
+                            className="bg-slate-50 hover:bg-amber-50 text-slate-600 border border-slate-200 hover:border-amber-500 rounded px-1.5 py-0.5 text-[8.5px] transition"
+                          >
+                            {rec.label} ({rec.path})
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-2 pt-2 border-t border-amber-100">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingMenuId(null);
+                          setNewMenuOpen(false);
+                        }}
+                        className="px-2.5 py-1 text-slate-500 text-xs hover:bg-slate-100 rounded"
+                      >
+                        취소
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-3.5 py-1 bg-slate-900 text-white rounded text-xs font-bold hover:bg-slate-800"
+                      >
+                        {editingMenuId ? '변경 사항 적용' : '메뉴 추가 완료'}
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {/* Menu Items List */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <div className="bg-slate-50 px-3 py-2 border-b border-slate-200 text-[9px] uppercase tracking-wider font-mono font-bold text-slate-500 flex justify-between items-center">
+                    <span>순서별 현재 등록된 상단 메뉴 탭</span>
+                    <span>위치 변경 / 컨트롤</span>
+                  </div>
+                  
+                  {menuItems.length === 0 ? (
+                    <p className="p-4 text-xs text-slate-400 text-center font-light leading-relaxed">등록된 메뉴 탭이 비어있습니다.</p>
+                  ) : (
+                    <div className="divide-y divide-slate-150">
+                      {menuItems.map((m, idx) => (
+                        <div
+                          key={m.id}
+                          className="p-3 hover:bg-slate-50/40 transition flex justify-between items-center gap-3"
+                        >
+                          <div>
+                            <span className="inline-block text-[10px] w-4 text-slate-400 font-mono font-bold leading-none">{idx + 1}</span>
+                            <span className="font-serif font-black text-slate-900 text-xs tracking-tight">{m.name}</span>
+                            <span className="text-[9px] text-slate-400 font-mono ml-2 border border-slate-100 px-1 py-0.5 bg-slate-50 rounded">
+                              /{m.path}
+                            </span>
+                          </div>
+
+                          <div className="flex gap-1 shrink-0 items-center">
+                            <button
+                              type="button"
+                              disabled={idx === 0}
+                              onClick={() => handleMoveMenuItem(idx, 'up')}
+                              className="p-1 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded disabled:opacity-30 disabled:pointer-events-none"
+                              title="위로 이동"
+                            >
+                              <ArrowUp size={11} />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={idx === menuItems.length - 1}
+                              onClick={() => handleMoveMenuItem(idx, 'down')}
+                              className="p-1 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded disabled:opacity-30 disabled:pointer-events-none"
+                              title="아래로 이동"
+                            >
+                              <ArrowDown size={11} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingMenuId(m.id);
+                                setNewMenuOpen(false);
+                                setMenuForm({ id: m.id, name: m.name, path: m.path });
+                              }}
+                              className="px-1.5 py-0.5 border border-amber-300 text-amber-700 hover:bg-amber-50 rounded text-[9px] leading-none text-center font-bold"
+                            >
+                              수정
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteMenuItem(m.id)}
+                              className="px-1.5 py-0.5 border border-rose-300 text-rose-700 hover:bg-rose-50 rounded text-[9px] leading-none text-center font-bold"
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
             </div>
+
           </div>
         )}
 

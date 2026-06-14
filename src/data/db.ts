@@ -1,4 +1,4 @@
-import { Post, Column, Category, SiteConfig } from '../types';
+import { Post, Column, Category, SiteConfig, MenuItem } from '../types';
 import { initialSiteConfig } from './siteConfig';
 import { initialCategories } from './categories';
 import { initialPosts } from './posts';
@@ -10,8 +10,18 @@ const KEYS = {
   POSTS: 'sajugongbang_posts',
   COLUMNS: 'sajugongbang_columns',
   ADMIN_LOGGED_IN: 'sajugongbang_admin_logged_in',
-  ADMIN_PASSWORD: 'sajugongbang_admin_password'
+  ADMIN_PASSWORD: 'sajugongbang_admin_password',
+  MENU_ITEMS: 'sajugongbang_menu_items'
 };
+
+const initialMenuItems: MenuItem[] = [
+  { id: '1', name: '홈', path: 'home' },
+  { id: '2', name: '사주 칼럼', path: 'columns' },
+  { id: '3', name: '카테고리 정보', path: 'categories' },
+  { id: '4', name: '소개', path: 'about' },
+  { id: '5', name: '상담사 소개', path: 'author' },
+  { id: '6', name: '문의하기', path: 'contact' },
+];
 
 // Site Config Helpers
 export function getSiteConfig(): SiteConfig {
@@ -45,6 +55,23 @@ export function getCategories(): Category[] {
 
 export function saveCategories(categories: Category[]): void {
   localStorage.setItem(KEYS.CATEGORIES, JSON.stringify(categories));
+}
+
+// Menu Items Helpers
+export function getMenuItems(): MenuItem[] {
+  const cached = localStorage.getItem(KEYS.MENU_ITEMS);
+  if (cached) {
+    try {
+      return JSON.parse(cached);
+    } catch (e) {
+      console.error('Failed to parse cached menu items', e);
+    }
+  }
+  return initialMenuItems;
+}
+
+export function saveMenuItems(items: MenuItem[]): void {
+  localStorage.setItem(KEYS.MENU_ITEMS, JSON.stringify(items));
 }
 
 // Post Helpers
@@ -120,6 +147,7 @@ export function resetToDefault(): void {
   localStorage.removeItem(KEYS.COLUMNS);
   localStorage.removeItem(KEYS.ADMIN_LOGGED_IN);
   localStorage.removeItem(KEYS.ADMIN_PASSWORD);
+  localStorage.removeItem(KEYS.MENU_ITEMS);
 }
 
 // Export All Database State as JSON object
@@ -128,7 +156,8 @@ export function exportAllData(): string {
     siteConfig: getSiteConfig(),
     categories: getCategories(),
     posts: getPosts(),
-    columns: getColumns()
+    columns: getColumns(),
+    menuItems: getMenuItems()
   };
   return JSON.stringify(data, null, 2);
 }
@@ -141,6 +170,7 @@ export function importAllData(jsonStr: string): boolean {
     if (parsed.categories) saveCategories(parsed.categories);
     if (parsed.posts) savePosts(parsed.posts);
     if (parsed.columns) saveColumns(parsed.columns);
+    if (parsed.menuItems) saveMenuItems(parsed.menuItems);
     return true;
   } catch (e) {
     console.error('Import failed', e);

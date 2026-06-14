@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, X, UserCheck, ShieldAlert } from 'lucide-react';
-import { getSiteConfig, isAdminLoggedIn, setAdminLoggedIn } from '../data/db';
+import { getSiteConfig, isAdminLoggedIn, setAdminLoggedIn, getMenuItems } from '../data/db';
 
 interface HeaderProps {
   currentPath: string;
@@ -15,14 +15,7 @@ export default function Header({ currentPath, navigate, onLogout, updateTrigger 
   const config = getSiteConfig();
   const loggedIn = isAdminLoggedIn();
 
-  const navItems = [
-    { name: '홈', path: 'home' },
-    { name: '사주 칼럼', path: 'columns' },
-    { name: '카테고리 정보', path: 'categories' },
-    { name: '소개', path: 'about' },
-    { name: '상담사 소개', path: 'author' },
-    { name: '문의하기', path: 'contact' },
-  ];
+  const navItems = getMenuItems();
 
   const handleNavClick = (path: string) => {
     navigate(path);
