@@ -113,3 +113,21 @@ export interface SiteConfig {
   authorShowConsultants?: boolean;
   authorShowRecentColumns?: boolean;
 }
+
+export interface VisitTrend {
+  date: string;
+  pv: number;
+  uv: number;
+}
+
+export interface CategoryClick {
+  categoryId: string;
+  categoryName: string;
+  clicks: number;
+}
+
+export interface AnalyticsData {
+  visitTrends: VisitTrend[];
+  categoryClicks: CategoryClick[];
+}
+

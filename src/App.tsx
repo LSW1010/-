@@ -10,7 +10,7 @@ import AboutView from './components/views/AboutView';
 import ContactView from './components/views/ContactView';
 import TrustViews from './components/views/TrustViews';
 import AdminView from './components/views/AdminView';
-import { setAdminLoggedIn, getSiteConfig } from './data/db';
+import { setAdminLoggedIn, getSiteConfig, incrementVisit, incrementCategoryClick } from './data/db';
 import { ShieldAlert, Compass } from 'lucide-react';
 
 export default function App() {
@@ -19,8 +19,21 @@ export default function App() {
 
   // Synchronize routing state with brower hash
   React.useEffect(() => {
+    // Initial visit count increment
+    incrementVisit();
+
     const handleHashChange = () => {
       setRouteHash(window.location.hash);
+      incrementVisit();
+
+      // Automatically increment category stats if navigating to a category
+      const rawHash = window.location.hash || '#/';
+      const path = rawHash.replace('#/', '').split('?')[0];
+      const segments = path.split('/');
+      if (segments[0] === 'categories' && segments[1]) {
+        incrementCategoryClick(segments[1]);
+      }
+
       // Automatically scroll to top on routing changes
       window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     };
@@ -29,6 +42,14 @@ export default function App() {
     // Initial check for hash redirects
     if (!window.location.hash) {
       window.location.hash = '#/';
+    } else {
+      // Check if deep link contains a category click
+      const rawHash = window.location.hash || '#/';
+      const path = rawHash.replace('#/', '').split('?')[0];
+      const segments = path.split('/');
+      if (segments[0] === 'categories' && segments[1]) {
+        incrementCategoryClick(segments[1]);
+      }
     }
 
     return () => {

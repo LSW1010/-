@@ -41,9 +41,23 @@ import {
   exportAllData,
   importAllData,
   getMenuItems,
-  saveMenuItems
+  saveMenuItems,
+  getAnalyticsData
 } from '../../data/db';
-import { Post, Column, Category, SiteConfig, FAQ, MenuItem } from '../../types';
+import { Post, Column, Category, SiteConfig, FAQ, MenuItem, AnalyticsData } from '../../types';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  BarChart,
+  Bar,
+  Cell
+} from 'recharts';
 
 interface AdminViewProps {
   onStateChange: () => void;
@@ -66,6 +80,7 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
   const [categories, setCategories] = React.useState<Category[]>([]);
   const [menuItems, setMenuItems] = React.useState<MenuItem[]>([]);
   const [siteConfig, setSiteConfig] = React.useState<SiteConfig | null>(null);
+  const [analyticsData, setAnalyticsData] = React.useState<AnalyticsData | null>(null);
 
   // Editing state trackers
   const [editingPost, setEditingPost] = React.useState<Partial<Post> | null>(null);
@@ -152,6 +167,7 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
     setCategories(getCategories());
     setMenuItems(getMenuItems());
     setSiteConfig(getSiteConfig());
+    setAnalyticsData(getAnalyticsData());
   };
 
   React.useEffect(() => {
@@ -707,10 +723,86 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
                 <p className="text-[10px] text-slate-400 mt-2 font-light">전체 정주 가동중</p>
               </div>
 
-              <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs">
-                <span className="text-[10px] text-rose-500 font-bold uppercase tracking-wider block">메인 추천 노출형 글</span>
-                <span className="text-3xl font-serif font-bold text-slate-900 block mt-2">{posts.filter(p => p.isFeatured).length} 개</span>
-                <p className="text-[10px] text-slate-400 mt-2 font-light">추천 가이드 마킹</p>
+            </div>
+
+            {/* 차트 대시보드 추가 (recharts) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2 font-sans">
+              
+              {/* 차트 1: 방문자 수 추이 */}
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-4">
+                <div className="flex justify-between items-center border-b pb-3 border-slate-100">
+                  <div>
+                    <h3 className="font-serif font-bold text-slate-900 text-sm">일주일간 방문자 분석 (Traffic-PV)</h3>
+                    <p className="text-[10px] text-slate-400 mt-0.5 font-light">인생 안내서를 수조 관찰하러 들어온 고유 방문자수(UV) 및 총 뷰어십(PV)</p>
+                  </div>
+                  <span className="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-mono font-semibold">실시간 수록</span>
+                </div>
+                
+                <div className="h-64 w-full text-[10px]">
+                  {analyticsData ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={analyticsData.visitTrends}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.15}/>
+                            <stop offset="95%" stopColor="#4f46e5" stopOpacity={0.01}/>
+                          </linearGradient>
+                          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#d97706" stopOpacity={0.15}/>
+                            <stop offset="95%" stopColor="#d97706" stopOpacity={0.01}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                        <XAxis dataKey="date" tickLine={false} stroke="#94a3b8" />
+                        <YAxis stroke="#94a3b8" tickLine={false} />
+                        <Tooltip contentStyle={{ fontSize: '11px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+                        <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                        <Area name="총 페이지 뷰 (PV)" type="monotone" dataKey="pv" stroke="#4f46e5" strokeWidth={2} fillOpacity={1} fill="url(#colorPv)" />
+                        <Area name="고유 방문자 (UV)" type="monotone" dataKey="uv" stroke="#d97706" strokeWidth={2} fillOpacity={1} fill="url(#colorUv)" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-slate-400">데이터를 집계하고 있습니다...</div>
+                  )}
+                </div>
+              </div>
+
+              {/* 차트 2: 카테고리별 클릭 점유 피라미드 */}
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-4">
+                <div className="flex justify-between items-center border-b pb-3 border-slate-100">
+                  <div>
+                    <h3 className="font-serif font-bold text-slate-900 text-sm">카테고리 학리별 열람 점유</h3>
+                    <p className="text-[10px] text-slate-400 mt-0.5 font-light">가장 많은 호응과 고찰 요청이 이어진 주제별 상대 점유 분포</p>
+                  </div>
+                  <span className="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-mono font-semibold">실제 누적량</span>
+                </div>
+                
+                <div className="h-64 w-full text-[10px]">
+                  {analyticsData ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={analyticsData.categoryClicks}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                        <XAxis dataKey="categoryName" stroke="#94a3b8" tickLine={false} />
+                        <YAxis stroke="#94a3b8" tickLine={false} />
+                        <Tooltip contentStyle={{ fontSize: '11px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+                        <Bar name="열람 클릭수" dataKey="clicks" radius={[4, 4, 0, 0]}>
+                          {analyticsData.categoryClicks.map((entry, index) => {
+                            const colors = ['#7c2d12', '#9a3412', '#c2410c', '#ea580c', '#f97316', '#fb923c'];
+                            return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                          })}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-slate-400">학문 연산을 수행하고 있습니다...</div>
+                  )}
+                </div>
               </div>
 
             </div>

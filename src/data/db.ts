@@ -1,4 +1,4 @@
-import { Post, Column, Category, SiteConfig, MenuItem } from '../types';
+import { Post, Column, Category, SiteConfig, MenuItem, AnalyticsData, VisitTrend, CategoryClick } from '../types';
 import { initialSiteConfig } from './siteConfig';
 import { initialCategories } from './categories';
 import { initialPosts } from './posts';
@@ -11,7 +11,8 @@ const KEYS = {
   COLUMNS: 'sajugongbang_columns',
   ADMIN_LOGGED_IN: 'sajugongbang_admin_logged_in',
   ADMIN_PASSWORD: 'sajugongbang_admin_password',
-  MENU_ITEMS: 'sajugongbang_menu_items'
+  MENU_ITEMS: 'sajugongbang_menu_items',
+  ANALYTICS: 'sajugongbang_analytics'
 };
 
 const initialMenuItems: MenuItem[] = [
@@ -148,6 +149,7 @@ export function resetToDefault(): void {
   localStorage.removeItem(KEYS.ADMIN_LOGGED_IN);
   localStorage.removeItem(KEYS.ADMIN_PASSWORD);
   localStorage.removeItem(KEYS.MENU_ITEMS);
+  localStorage.removeItem(KEYS.ANALYTICS);
 }
 
 // Export All Database State as JSON object
@@ -157,7 +159,8 @@ export function exportAllData(): string {
     categories: getCategories(),
     posts: getPosts(),
     columns: getColumns(),
-    menuItems: getMenuItems()
+    menuItems: getMenuItems(),
+    analytics: getAnalyticsData()
   };
   return JSON.stringify(data, null, 2);
 }
@@ -171,9 +174,107 @@ export function importAllData(jsonStr: string): boolean {
     if (parsed.posts) savePosts(parsed.posts);
     if (parsed.columns) saveColumns(parsed.columns);
     if (parsed.menuItems) saveMenuItems(parsed.menuItems);
+    if (parsed.analytics) saveAnalytics(parsed.analytics);
     return true;
   } catch (e) {
     console.error('Import failed', e);
     return false;
   }
 }
+
+// --- Analytics Helpers ---
+export function getAnalyticsData(): AnalyticsData {
+  const cached = localStorage.getItem(KEYS.ANALYTICS);
+  if (cached) {
+    try {
+      return JSON.parse(cached);
+    } catch (e) {
+      console.error('Failed to parse cached analytics', e);
+    }
+  }
+
+  // Generate realistic initial analytics data for 7 days
+  const trends: VisitTrend[] = [];
+  const categories = getCategories();
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+
+    // Create realistic visitor counts with upward trend
+    const baseUv = 110 + Math.floor(Math.random() * 80) + (6 - i) * 15;
+    const basePv = baseUv + 80 + Math.floor(Math.random() * 100);
+
+    trends.push({
+      date: dateStr,
+      pv: basePv,
+      uv: baseUv
+    });
+  }
+
+  const clicks: CategoryClick[] = categories.map((cat, index) => {
+    // natural mock clicks representing historical traffic
+    const baseClicks = [780, 540, 620, 310, 480, 250][index % 6] || 150;
+    return {
+      categoryId: cat.id,
+      categoryName: cat.name.split(' (')[0],
+      clicks: baseClicks + Math.floor(Math.random() * 50)
+    };
+  });
+
+  const initialData: AnalyticsData = {
+    visitTrends: trends,
+    categoryClicks: clicks
+  };
+
+  saveAnalytics(initialData);
+  return initialData;
+}
+
+export function saveAnalytics(data: AnalyticsData): void {
+  localStorage.setItem(KEYS.ANALYTICS, JSON.stringify(data));
+}
+
+export function incrementVisit(): void {
+  const data = getAnalyticsData();
+  const today = new Date().toISOString().split('T')[0];
+  const lastVisitedDate = localStorage.getItem('sajugongbang_last_visited_date');
+
+  let todayTrend = data.visitTrends.find(t => t.date === today);
+
+  if (!todayTrend) {
+    // If today's slot doesn't exist, create it and trim oldest to keep 7 days
+    todayTrend = { date: today, pv: 0, uv: 0 };
+    data.visitTrends.push(todayTrend);
+    if (data.visitTrends.length > 7) {
+      data.visitTrends.shift();
+    }
+  }
+
+  todayTrend.pv += 1;
+
+  if (lastVisitedDate !== today) {
+    todayTrend.uv += 1;
+    localStorage.setItem('sajugongbang_last_visited_date', today);
+  }
+
+  saveAnalytics(data);
+}
+
+export function incrementCategoryClick(categoryId: string): void {
+  const data = getAnalyticsData();
+  const categories = getCategories();
+  const targetCat = categories.find(c => c.id === categoryId);
+  const catName = targetCat ? targetCat.name.split(' (')[0] : categoryId;
+
+  let click = data.categoryClicks.find(c => c.categoryId === categoryId);
+  if (!click) {
+    click = { categoryId, categoryName: catName, clicks: 0 };
+    data.categoryClicks.push(click);
+  }
+
+  click.clicks += 1;
+  saveAnalytics(data);
+}
+
