@@ -1,6 +1,6 @@
 {
   "name": "사주공방",
-  "description": "명리학 기반 정통 사주 상담 및 학술 정보 전문 채널. 워드프레스 스타일의 CMS-lite 관리자 모드를 내장한 브랜드 정보 사이트입니다.",
+  "description": "명리학 기반 정통 사주 상담 및 학술 정보 전문 채널. 사주공방 브랜드 정보 사이트입니다.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
