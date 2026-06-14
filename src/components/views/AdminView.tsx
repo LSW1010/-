@@ -31,6 +31,8 @@ import {
   saveColumns,
   isAdminLoggedIn,
   setAdminLoggedIn,
+  getAdminPassword,
+  saveAdminPassword,
   resetToDefault,
   exportAllData,
   importAllData
@@ -72,6 +74,60 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
   // Toast / Status banner
   const [statusMsg, setStatusMsg] = React.useState({ type: 'success', text: '' });
 
+  // Password change states
+  const [currentPw, setCurrentPw] = React.useState('');
+  const [newPw, setNewPw] = React.useState('');
+  const [confirmNewPw, setConfirmNewPw] = React.useState('');
+  const [pwError, setPwError] = React.useState('');
+  const [pwSuccess, setPwSuccess] = React.useState('');
+
+  const handleChangePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwError('');
+    setPwSuccess('');
+
+    const savedPw = getAdminPassword();
+    
+    // Validate current password (if saved password is admin, they can verify with 'admin' or '1234')
+    const verifyOk = savedPw === 'admin'
+      ? (currentPw === 'admin' || currentPw === '1234')
+      : (currentPw === savedPw);
+
+    if (!verifyOk) {
+      setPwError('현재 비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    if (!newPw || newPw.trim().length < 4) {
+      setPwError('새 비밀번호는 최소 4자 이상이어야 합니다.');
+      return;
+    }
+
+    if (newPw !== confirmNewPw) {
+      setPwError('새 비밀번호와 확인 입력이 일치하지 않습니다.');
+      return;
+    }
+
+    saveAdminPassword(newPw.trim());
+    setCurrentPw('');
+    setNewPw('');
+    setConfirmNewPw('');
+    setPwSuccess('관리자 비밀번호가 성공적으로 변경되었습니다. 다음 로그인부터 적용됩니다.');
+    triggerStatus('관리자 비밀번호가 성공적으로 변경되었습니다.');
+  };
+
+  const handleResetPassword = () => {
+    if (confirm('관리자 비밀번호를 기본 초기 상태("admin")로 즉시 초기화하시겠습니까?')) {
+      saveAdminPassword('admin');
+      setCurrentPw('');
+      setNewPw('');
+      setConfirmNewPw('');
+      setPwError('');
+      setPwSuccess('비밀번호가 기본 초기값("admin")으로 리셋되었습니다.');
+      triggerStatus('관리자 비밀번호가 초기화되었습니다.');
+    }
+  };
+
   // Load Database state
   const loadDatabase = () => {
     setPosts(getPosts());
@@ -101,14 +157,23 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
   // Demo Admin Authenticator
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'admin' || password === '1234') {
+    const currentSavedPassword = getAdminPassword();
+    const isCorrect = currentSavedPassword === 'admin'
+      ? (password === 'admin' || password === '1234')
+      : (password === currentSavedPassword);
+
+    if (isCorrect) {
       setAdminLoggedIn(true);
       setIsLogged(true);
       setAuthError('');
       triggerStatus('관리자 모드로 안전 로그인하였습니다.');
       onStateChange(); // Notify root
     } else {
-      setAuthError('패스워드가 잘못되었습니다. 관리자 데모 비밀번호는 "admin" 또는 "1234" 입니다.');
+      setAuthError(
+        currentSavedPassword === 'admin'
+          ? '비밀번호가 잘못되었습니다. 관리자 기본 비밀번호는 "admin" 또는 "1234" 입니다.'
+          : '변경된 관리자 비밀번호가 일치하지 않습니다.'
+      );
     }
   };
 
@@ -1083,103 +1148,187 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
 
         {/* ==================== F. SITE SETTINGS VIEW ==================== */}
         {activeTab === 'settings' && siteConfig && (
-          <form onSubmit={handleSaveSettings} className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs space-y-6 animate-fade-in max-w-3xl">
-            <div>
-              <h1 className="text-xl font-serif font-bold text-slate-900">사주공방 대표 사이트 설정</h1>
-              <p className="text-xs text-slate-500 mt-1">상호, 이메일, 대표자 정보 및 노출 색상을 한 데 모아 수정합니다.</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-3">
+          <div className="space-y-6 max-w-3xl animate-fade-in">
+            <form onSubmit={handleSaveSettings} className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs space-y-6">
               <div>
-                <label className="block text-xs font-semibold mb-1">* 서비스명</label>
-                <input
-                  type="text"
-                  value={siteConfig.siteName}
-                  onChange={(e) => setSiteConfig(c => ({ ...c!, siteName: e.target.value }))}
-                  className="w-full text-xs border rounded p-2"
-                />
+                <h1 className="text-xl font-serif font-bold text-slate-900">사주공방 대표 사이트 설정</h1>
+                <p className="text-xs text-slate-500 mt-1">상호, 이메일, 대표자 정보 및 노출 색상을 한 데 모아 수정합니다.</p>
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-3">
+                <div>
+                  <label className="block text-xs font-semibold mb-1">* 서비스명</label>
+                  <input
+                    type="text"
+                    value={siteConfig.siteName}
+                    onChange={(e) => setSiteConfig(c => ({ ...c!, siteName: e.target.value }))}
+                    className="w-full text-xs border rounded p-2"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold mb-1">* 대표자/운영자 성명</label>
+                  <input
+                    type="text"
+                    value={siteConfig.ownerName}
+                    onChange={(e) => setSiteConfig(c => ({ ...c!, ownerName: e.target.value, ownerNameReal: e.target.value }))}
+                    className="w-full text-xs border rounded p-2"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold mb-1">한줄 간판 태그라인 (Tagline)</label>
+                  <input
+                    type="text"
+                    value={siteConfig.tagline}
+                    onChange={(e) => setSiteConfig(c => ({ ...c!, tagline: e.target.value }))}
+                    className="w-full text-xs border rounded p-2"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold mb-1">대표자 신조 바이오 (Bio)</label>
+                  <textarea
+                    value={siteConfig.ownerBio}
+                    rows={3}
+                    onChange={(e) => setSiteConfig(c => ({ ...c!, ownerBio: e.target.value }))}
+                    className="w-full text-xs border rounded p-2 font-light leading-relaxed"
+                  ></textarea>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold mb-1">* 공식 문의 이메일</label>
+                  <input
+                    type="email"
+                    value={siteConfig.contactEmail}
+                    onChange={(e) => setSiteConfig(c => ({ ...c!, contactEmail: e.target.value }))}
+                    className="w-full text-xs border rounded p-2 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold mb-1">주소</label>
+                  <input
+                    type="text"
+                    value={siteConfig.address}
+                    onChange={(e) => setSiteConfig(c => ({ ...c!, address: e.target.value }))}
+                    className="w-full text-xs border rounded p-2"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold mb-1">사업자정보 상호(업체명)</label>
+                  <input
+                    type="text"
+                    value={siteConfig.companyName}
+                    onChange={(e) => setSiteConfig(c => ({ ...c!, companyName: e.target.value }))}
+                    className="w-full text-xs border rounded p-2"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold mb-1">사업자등록번호</label>
+                  <input
+                    type="text"
+                    value={siteConfig.businessNumber}
+                    onChange={(e) => setSiteConfig(c => ({ ...c!, businessNumber: e.target.value }))}
+                    className="w-full text-xs border rounded p-2 font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t text-right">
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 ml-auto"
+                >
+                  <Save size={14} /> 설정 내용 저장 기표
+                </button>
+              </div>
+            </form>
+
+            {/* Administrator Password Edit/Reset (관리자 비밀번호 변경/초기화) */}
+            <form onSubmit={handleChangePassword} className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs space-y-6">
               <div>
-                <label className="block text-xs font-semibold mb-1">* 대표자/운영자 성명</label>
-                <input
-                  type="text"
-                  value={siteConfig.ownerName}
-                  onChange={(e) => setSiteConfig(c => ({ ...c!, ownerName: e.target.value, ownerNameReal: e.target.value }))}
-                  className="w-full text-xs border rounded p-2"
-                />
+                <h2 className="text-sm font-serif font-bold text-slate-900 flex items-center gap-1.5">
+                  <Lock size={16} className="text-amber-600" />
+                  관리자 계정 보안 설정 (비밀번호 변경 및 초기화)
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">CMS 제어판 접속을 위한 비밀번호를 변경하거나 즉시 공장 초기상태(&apos;admin&apos;)로 재설정합니다.</p>
               </div>
 
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold mb-1">한줄 간판 태그라인 (Tagline)</label>
-                <input
-                  type="text"
-                  value={siteConfig.tagline}
-                  onChange={(e) => setSiteConfig(c => ({ ...c!, tagline: e.target.value }))}
-                  className="w-full text-xs border rounded p-2"
-                />
+              {pwError && (
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-sm">
+                  ⚠ {pwError}
+                </div>
+              )}
+
+              {pwSuccess && (
+                <div className="p-3 bg-emerald-50 border border-emerald-250 text-emerald-700 text-xs rounded-sm">
+                  ✓ {pwSuccess}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
+                <div>
+                  <label className="block text-xs font-semibold mb-1">* 현재 비밀번호</label>
+                  <input
+                    type="password"
+                    required
+                    value={currentPw}
+                    onChange={(e) => setCurrentPw(e.target.value)}
+                    placeholder="기존 비밀번호 입력"
+                    className="w-full text-xs border rounded p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold mb-1">* 새 비밀번호</label>
+                  <input
+                    type="password"
+                    required
+                    value={newPw}
+                    onChange={(e) => setNewPw(e.target.value)}
+                    placeholder="최소 4자 이상"
+                    className="w-full text-xs border rounded p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold mb-1">* 새 비밀번호 확인</label>
+                  <input
+                    type="password"
+                    required
+                    value={confirmNewPw}
+                    onChange={(e) => setConfirmNewPw(e.target.value)}
+                    placeholder="동일한 비밀번호 재입력"
+                    className="w-full text-xs border rounded p-2"
+                  />
+                </div>
               </div>
 
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold mb-1">대표자 신조 바이오 (Bio)</label>
-                <textarea
-                  value={siteConfig.ownerBio}
-                  rows={3}
-                  onChange={(e) => setSiteConfig(c => ({ ...c!, ownerBio: e.target.value }))}
-                  className="w-full text-xs border rounded p-2 font-light leading-relaxed"
-                ></textarea>
+              <div className="pt-4 border-t flex flex-col sm:flex-row gap-3 justify-between items-center bg-slate-50 p-4 rounded-lg border">
+                <div className="text-left">
+                  <span className="text-xs font-semibold block text-slate-800">보안 초기화 (Reset)</span>
+                  <p className="text-[10px] text-slate-400 font-light mt-0.5">변경한 비밀번호를 분실하셨을 때 기본 값(&apos;admin&apos;)으로 돌립니다.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleResetPassword}
+                  className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded text-xs font-semibold border border-rose-700 transition shrink-0"
+                >
+                  비밀번호 &apos;admin&apos; 초기화
+                </button>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold mb-1">* 공식 문의 이메일</label>
-                <input
-                  type="email"
-                  value={siteConfig.contactEmail}
-                  onChange={(e) => setSiteConfig(c => ({ ...c!, contactEmail: e.target.value }))}
-                  className="w-full text-xs border rounded p-2 font-mono"
-                />
+              <div className="pt-2 text-right">
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold rounded flex items-center gap-1.5 ml-auto shadow-sm"
+                >
+                  <Lock size={14} /> 비밀번호 변경 반영
+                </button>
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold mb-1">주소</label>
-                <input
-                  type="text"
-                  value={siteConfig.address}
-                  onChange={(e) => setSiteConfig(c => ({ ...c!, address: e.target.value }))}
-                  className="w-full text-xs border rounded p-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold mb-1">사업자정보 상호(업체명)</label>
-                <input
-                  type="text"
-                  value={siteConfig.companyName}
-                  onChange={(e) => setSiteConfig(c => ({ ...c!, companyName: e.target.value }))}
-                  className="w-full text-xs border rounded p-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold mb-1">사업자등록번호</label>
-                <input
-                  type="text"
-                  value={siteConfig.businessNumber}
-                  onChange={(e) => setSiteConfig(c => ({ ...c!, businessNumber: e.target.value }))}
-                  className="w-full text-xs border rounded p-2 font-mono"
-                />
-              </div>
-            </div>
-
-            <div className="pt-4 border-t text-right">
-              <button
-                type="submit"
-                className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 ml-auto"
-              >
-                <Save size={14} /> 설정 내용 저장 기표
-              </button>
-            </div>
-          </form>
+            </form>
+          </div>
         )}
 
         {/* ==================== G. BACKUP / RESTORE DATABASE VIEW ==================== */}

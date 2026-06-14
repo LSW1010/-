@@ -93,14 +93,7 @@ export default function Header({ currentPath, navigate, onLogout, updateTrigger 
                   로그아웃
                 </button>
               </div>
-            ) : (
-              <button
-                onClick={() => handleNavClick('admin')}
-                className="text-xs text-theme-secondary hover:text-theme-text transition bg-theme-warm/80 hover:bg-theme-warm px-2.5 py-1.5 border border-theme-border rounded-sm font-semibold"
-              >
-                관리자
-              </button>
-            )}
+            ) : null}
           </div>
 
           {/* Mobile menu button */}
@@ -154,14 +147,7 @@ export default function Header({ currentPath, navigate, onLogout, updateTrigger 
                   관리자 대시보드 열기
                 </button>
               </div>
-            ) : (
-              <button
-                onClick={() => handleNavClick('admin')}
-                className="w-full text-center py-2 bg-theme-warm text-theme-text rounded-sm text-xs font-semibold hover:bg-theme-warm-deep border border-theme-border"
-              >
-                관리자 모드(데모) 접속
-              </button>
-            )}
+            ) : null}
           </div>
         </div>
       )}

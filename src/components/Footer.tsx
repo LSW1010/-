@@ -1,5 +1,5 @@
 import React from 'react';
-import { getSiteConfig } from '../data/db';
+import { getSiteConfig, isAdminLoggedIn } from '../data/db';
 
 interface FooterProps {
   navigate: (path: string) => void;
@@ -7,6 +7,7 @@ interface FooterProps {
 
 export default function Footer({ navigate }: FooterProps) {
   const config = getSiteConfig();
+  const loggedIn = isAdminLoggedIn();
 
   return (
     <footer className="w-full bg-[#FAF7F2] text-theme-secondary font-sans border-t border-theme-border pb-12 pt-10 text-[11px] sm:text-xs">
@@ -80,6 +81,17 @@ export default function Footer({ navigate }: FooterProps) {
                 <button onClick={() => navigate('contact')} className="hover:text-theme-accent hover:underline transition font-bold text-theme-accent/95 text-left">
                   메일 문의하기
                 </button>
+              </li>
+              <li>
+                {loggedIn ? (
+                  <button onClick={() => navigate('admin')} className="hover:text-theme-accent hover:underline transition font-bold text-theme-accent/95 text-left">
+                    관리자 제어판
+                  </button>
+                ) : (
+                  <button onClick={() => navigate('admin')} className="hover:text-theme-accent hover:underline transition font-light text-left">
+                    관리자 로그인
+                  </button>
+                )}
               </li>
             </ul>
           </div>

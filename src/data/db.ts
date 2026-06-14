@@ -9,7 +9,8 @@ const KEYS = {
   CATEGORIES: 'sajugongbang_categories',
   POSTS: 'sajugongbang_posts',
   COLUMNS: 'sajugongbang_columns',
-  ADMIN_LOGGED_IN: 'sajugongbang_admin_logged_in'
+  ADMIN_LOGGED_IN: 'sajugongbang_admin_logged_in',
+  ADMIN_PASSWORD: 'sajugongbang_admin_password'
 };
 
 // Site Config Helpers
@@ -101,6 +102,16 @@ export function setAdminLoggedIn(status: boolean): void {
   localStorage.setItem(KEYS.ADMIN_LOGGED_IN, status ? 'true' : 'false');
 }
 
+export function getAdminPassword(): string {
+  const cached = localStorage.getItem(KEYS.ADMIN_PASSWORD);
+  // Default is 'admin'. If the user resets, it will fall back to 'admin' or they can also use '1234' on fresh login unless changed.
+  return cached || 'admin';
+}
+
+export function saveAdminPassword(password: string): void {
+  localStorage.setItem(KEYS.ADMIN_PASSWORD, password);
+}
+
 // Database Reset/Reload Helpers
 export function resetToDefault(): void {
   localStorage.removeItem(KEYS.SITE_CONFIG);
@@ -108,6 +119,7 @@ export function resetToDefault(): void {
   localStorage.removeItem(KEYS.POSTS);
   localStorage.removeItem(KEYS.COLUMNS);
   localStorage.removeItem(KEYS.ADMIN_LOGGED_IN);
+  localStorage.removeItem(KEYS.ADMIN_PASSWORD);
 }
 
 // Export All Database State as JSON object
