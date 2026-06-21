@@ -1763,6 +1763,172 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
                   ></textarea>
                 </div>
 
+                {/* 상단 헤더 로고 커스터마이징 */}
+                <div className="sm:col-span-2 bg-slate-50 p-4 border border-slate-200 rounded-lg space-y-4">
+                  <span className="text-[10px] text-amber-600 font-bold uppercase tracking-wider block font-mono">
+                    ★ 상단 대표 로고 디자인 설정 (Brand Logo Customization)
+                  </span>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold mb-1">로고 표현 방식 (Logo Mode)</label>
+                      <select
+                        value={siteConfig.logoMode || 'traditional'}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, logoMode: e.target.value as any }))}
+                        className="w-full text-xs border rounded p-2 bg-white"
+                      >
+                        <option value="traditional">정통 문양 (Hanok / Moon 일러스트)</option>
+                        <option value="text">이니셜 텍스트형 (Text Wordmark)</option>
+                        <option value="emoji">엠블럼 이모지형 (Iconic Emoji)</option>
+                        <option value="image">이미지 직접 등록형 (Custom Image Upload)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold mb-1">로고 전용 컬러 (Logo Primary Color)</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={siteConfig.logoColor || '#0B2240'}
+                          onChange={(e) => setSiteConfig(c => ({ ...c!, logoColor: e.target.value }))}
+                          className="h-8 w-8 cursor-pointer rounded border border-slate-300 p-0 shadow-3xs"
+                        />
+                        <input
+                          type="text"
+                          value={siteConfig.logoColor || '#0B2240'}
+                          onChange={(e) => setSiteConfig(c => ({ ...c!, logoColor: e.target.value }))}
+                          className="w-full text-xs font-mono border rounded p-1.5"
+                          placeholder="#0B2240"
+                        />
+                      </div>
+                    </div>
+
+                    {siteConfig.logoMode === 'text' && (
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs font-semibold mb-1">로고 표기 문구 (최대 4글자 권장)</label>
+                        <input
+                          type="text"
+                          value={siteConfig.logoText || ''}
+                          onChange={(e) => setSiteConfig(c => ({ ...c!, logoText: e.target.value }))}
+                          className="w-full text-xs border rounded p-2"
+                          placeholder="공방"
+                          maxLength={10}
+                        />
+                        <p className="text-[10px] text-slate-400 mt-1 font-light">지반의 테두리와 함께 표기되는 단어입니다.</p>
+                      </div>
+                    )}
+
+                    {siteConfig.logoMode === 'emoji' && (
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs font-semibold mb-1">로고 대체용 국악/천문 이모지</label>
+                        <input
+                          type="text"
+                          value={siteConfig.logoEmoji || ''}
+                          onChange={(e) => setSiteConfig(c => ({ ...c!, logoEmoji: e.target.value }))}
+                          className="w-full text-xs border rounded p-2 text-center text-lg"
+                          placeholder="🏯"
+                        />
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {['🏯', '🌙', '🌌', '☀️', '☯️', '📜', '🎐', '🌲', '🏔️'].map(emo => (
+                            <button
+                              key={emo}
+                              type="button"
+                              onClick={() => setSiteConfig(c => ({ ...c!, logoEmoji: emo }))}
+                              className={`p-1 border text-xs rounded hover:bg-slate-100 ${siteConfig.logoEmoji === emo ? 'border-amber-500 bg-amber-50' : 'border-slate-200 bg-white'}`}
+                            >
+                              {emo}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {siteConfig.logoMode === 'image' && (
+                      <div className="sm:col-span-2 space-y-2">
+                        <label className="block text-xs font-semibold mb-1">커스텀 로고 이미지 업로드 (Custom Logo Image)</label>
+                        
+                        <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border border-dashed border-slate-300 rounded-lg bg-white shadow-3xs">
+                          {/* Image preview box */}
+                          <div className="h-16 w-16 shrink-0 flex items-center justify-center border border-slate-200 bg-slate-50 rounded-lg overflow-hidden relative group">
+                            {siteConfig.logoImage ? (
+                              <img 
+                                src={siteConfig.logoImage} 
+                                alt="Logo Preview" 
+                                className="w-full h-full object-contain"
+                                referrerPolicy="no-referrer"
+                              />
+                            ) : (
+                              <span className="text-[10px] text-slate-400 font-medium">No Image</span>
+                            )}
+                          </div>
+
+                          {/* Controls */}
+                          <div className="flex-1 space-y-1.5 w-full text-center sm:text-left">
+                            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                              <label className="cursor-pointer bg-[#0B2240] text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-opacity-90 active:scale-95 transition-all inline-block shadow-3xs">
+                                파일 선택 (Choose File)
+                                <input 
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      const reader = new FileReader();
+                                      reader.onloadend = () => {
+                                        setSiteConfig(c => ({ ...c!, logoImage: reader.result as string }));
+                                      };
+                                      reader.readAsDataURL(file);
+                                    }
+                                  }}
+                                />
+                              </label>
+
+                              {siteConfig.logoImage && (
+                                <button
+                                  type="button"
+                                  onClick={() => setSiteConfig(c => ({ ...c!, logoImage: '' }))}
+                                  className="border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded text-xs font-medium transition-all active:scale-95"
+                                >
+                                  이미지 제거 (Delete)
+                                </button>
+                              )}
+                            </div>
+                            <p className="text-[10px] text-slate-400 font-light">
+                              가로세로 비율이 1:1에 가까운 투명(PNG) 혹은 원형의 이미지를 권장합니다. (최대 1.5MB)
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* drag and drop support */}
+                        <div 
+                          className="border-2 border-dashed border-slate-200 hover:border-amber-400 rounded-lg p-4 text-center cursor-pointer transition-all bg-slate-50 hover:bg-amber-50/20"
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const file = e.dataTransfer.files?.[0];
+                            if (file && file.type.startsWith('image/')) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setSiteConfig(c => ({ ...c!, logoImage: reader.result as string }));
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        >
+                          <span className="text-[11px] text-slate-500 font-medium">
+                            여기에 이미지 파일을 드래그하여 놓아도 로고가 자동으로 등록됩니다. (Drag & Drop here)
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-semibold mb-1">* 공식 문의 이메일</label>
                   <input

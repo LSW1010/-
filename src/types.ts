@@ -112,6 +112,13 @@ export interface SiteConfig {
   authorShowPrinciples?: boolean;
   authorShowConsultants?: boolean;
   authorShowRecentColumns?: boolean;
+
+  // Custom Logo configurations
+  logoMode?: 'traditional' | 'text' | 'emoji' | 'image';
+  logoText?: string;
+  logoEmoji?: string;
+  logoColor?: string;
+  logoImage?: string; // base64 encoded custom image or url
 }
 
 export interface VisitTrend {

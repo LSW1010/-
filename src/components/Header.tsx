@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu, X, UserCheck, ShieldAlert } from 'lucide-react';
 import { getSiteConfig, isAdminLoggedIn, setAdminLoggedIn, getMenuItems } from '../data/db';
+import SajuLogo from './SajuLogo';
 
 interface HeaderProps {
   currentPath: string;
@@ -35,9 +36,7 @@ export default function Header({ currentPath, navigate, onLogout, updateTrigger 
         <div className="flex h-16 items-center justify-between">
           {/* Logo & Branding */}
           <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => handleNavClick('home')}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-sm border-2 border-theme-text font-serif text-sm font-black text-theme-text bg-theme-warm shadow-[2px_2px_0px_0px_rgba(45,41,38,1)]">
-              공방
-            </div>
+            <SajuLogo size={42} className="text-[#0B2240] hover:scale-105 hover:rotate-6 transition-all duration-300" />
             <div>
               <span className="font-serif text-lg font-extrabold tracking-tight text-theme-text block leading-none">
                 {config.siteName}

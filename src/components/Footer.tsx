@@ -1,5 +1,6 @@
 import React from 'react';
 import { getSiteConfig, isAdminLoggedIn } from '../data/db';
+import SajuLogo from './SajuLogo';
 
 interface FooterProps {
   navigate: (path: string) => void;
@@ -19,9 +20,7 @@ export default function Footer({ navigate }: FooterProps) {
           {/* Col 1: Brand introduction */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-sm border border-theme-text font-serif text-xs font-black text-theme-text bg-theme-warm shadow-[1.5px_1.5px_0px_0px_rgba(45,41,38,1)]">
-                공방
-              </div>
+            <SajuLogo size={32} className="text-[#0B2240] hover:scale-110 transition-transform duration-300" />
               <span className="font-serif text-sm font-extrabold text-theme-text tracking-widest">
                 {config.siteName}
               </span>

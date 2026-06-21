@@ -62,4 +62,11 @@ export const initialSiteConfig: SiteConfig = {
   authorShowPrinciples: true,
   authorShowConsultants: true,
   authorShowRecentColumns: true,
+
+  // Customizable logo configurations
+  logoMode: 'traditional',
+  logoText: '공방',
+  logoEmoji: '🏯',
+  logoColor: '#0B2240',
+  logoImage: '',
 };
