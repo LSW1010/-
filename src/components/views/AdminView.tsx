@@ -1187,6 +1187,89 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
               </div>
             </div>
 
+            {/* Post Thumbnail Image Attachment */}
+            <div className="border border-slate-200 rounded-lg p-5 bg-slate-50/50 space-y-4">
+              <span className="text-[11px] text-amber-600 font-bold uppercase tracking-wider block font-mono">
+                ★ 대표 이미지 첨부 (Cover / Thumbnail Image)
+              </span>
+              
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="h-20 w-20 shrink-0 flex items-center justify-center border border-slate-200 bg-white rounded-lg overflow-hidden relative group">
+                  {editingPost.thumbnail ? (
+                    <img 
+                      src={editingPost.thumbnail} 
+                      alt="Thumbnail Preview" 
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-medium text-center">첨부 이미지<br />없음</span>
+                  )}
+                </div>
+
+                <div className="flex-1 space-y-1.5 w-full text-center sm:text-left">
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                    <label className="cursor-pointer bg-[#0B2240] text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-opacity-90 active:scale-95 transition-all inline-block shadow-3xs">
+                      이미지 업로드 (Attach File)
+                      <input 
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setEditingPost(p => ({ ...p!, thumbnail: reader.result as string }));
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+
+                    {editingPost.thumbnail && (
+                      <button
+                        type="button"
+                        onClick={() => setEditingPost(p => ({ ...p!, thumbnail: '' }))}
+                        className="border border-rose-200 text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded text-xs font-medium transition-all active:scale-95"
+                      >
+                        이미지 제거 (Remove)
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-400 font-light font-sans">
+                    글 상단 및 목록 썸네일에 노출될 이미지를 등록합니다. 드래그 앤 드롭 업로드도 지원됩니다. (최대 1.5MB)
+                  </p>
+                </div>
+              </div>
+
+              {/* Drag and drop zone */}
+              <div 
+                className="border border-dashed border-slate-200 hover:border-amber-400 rounded-md p-3 text-center cursor-pointer transition-all bg-white hover:bg-amber-50/10"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const file = e.dataTransfer.files?.[0];
+                  if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setEditingPost(p => ({ ...p!, thumbnail: reader.result as string }));
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+              >
+                <span className="text-[10px] text-slate-500 font-medium font-sans">
+                  이곳에 이미지 파일을 드랍해도 글대표 이미지가 업로드됩니다. (Drag & Drop here)
+                </span>
+              </div>
+            </div>
+
             {/* Checkbox and selects */}
             <div className="flex flex-wrap items-center gap-6 border-t pt-4">
               <label className="flex items-center gap-2 text-xs font-semibold">
@@ -1316,6 +1399,89 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
                 rows={12}
                 className="w-full text-xs border rounded p-3 font-serif leading-relaxed"
               ></textarea>
+            </div>
+
+            {/* Column Thumbnail Image Attachment */}
+            <div className="border border-slate-200 rounded-lg p-5 bg-slate-50/50 space-y-4">
+              <span className="text-[11px] text-amber-600 font-bold uppercase tracking-wider block font-mono">
+                ★ 대표 이미지 첨부 (Column Thumbnail / Illustration Image)
+              </span>
+              
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="h-20 w-20 shrink-0 flex items-center justify-center border border-slate-200 bg-white rounded-lg overflow-hidden relative group">
+                  {editingColumn.thumbnail ? (
+                    <img 
+                      src={editingColumn.thumbnail} 
+                      alt="Column Thumbnail Preview" 
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-medium text-center">첨부 이미지<br />없음</span>
+                  )}
+                </div>
+
+                <div className="flex-1 space-y-1.5 w-full text-center sm:text-left">
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                    <label className="cursor-pointer bg-[#0B2240] text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-opacity-90 active:scale-95 transition-all inline-block shadow-3xs">
+                      이미지 업로드 (Attach Column Image)
+                      <input 
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setEditingColumn(c => ({ ...c!, thumbnail: reader.result as string }));
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+
+                    {editingColumn.thumbnail && (
+                      <button
+                        type="button"
+                        onClick={() => setEditingColumn(c => ({ ...c!, thumbnail: '' }))}
+                        className="border border-rose-200 text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded text-xs font-medium transition-all active:scale-95"
+                      >
+                        이미지 제거 (Remove)
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-400 font-light font-sans">
+                    사주 수필 칼럼 상단에 아름답게 노출될 기풍 서린 이미지를 등록합니다. 드래그 앤 드롭 업로드도 지원됩니다. (최대 1.5MB)
+                  </p>
+                </div>
+              </div>
+
+              {/* Drag and drop zone */}
+              <div 
+                className="border border-dashed border-slate-200 hover:border-amber-400 rounded-md p-3 text-center cursor-pointer transition-all bg-white hover:bg-amber-50/10"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const file = e.dataTransfer.files?.[0];
+                  if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setEditingColumn(c => ({ ...c!, thumbnail: reader.result as string }));
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+              >
+                <span className="text-[10px] text-slate-500 font-medium font-sans">
+                  이곳에 이미지 파일을 드랍해도 칼럼 대표 이미지가 업로드됩니다. (Drag & Drop here)
+                </span>
+              </div>
             </div>
 
             {/* Post status and actions */}
@@ -1761,6 +1927,126 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
                     onChange={(e) => setSiteConfig(c => ({ ...c!, ownerBio: e.target.value }))}
                     className="w-full text-xs border rounded p-2 font-light leading-relaxed"
                   ></textarea>
+                </div>
+
+                {/* 홈페이지 히어로 핵심 문구 및 배경 이미지 설정 */}
+                <div className="sm:col-span-2 bg-slate-50 p-4 border border-slate-200 rounded-lg space-y-4">
+                  <span className="text-[10px] text-amber-600 font-bold uppercase tracking-wider block font-mono">
+                    ★ 홈페이지 대간판(Hero) 핵심 문구 및 대표 이미지 설정 (Home Hero Customization)
+                  </span>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold mb-1">히어로 제목 (Hero Title)</label>
+                      <input
+                        type="text"
+                        value={siteConfig.homeHeroTitle || ''}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, homeHeroTitle: e.target.value }))}
+                        className="w-full text-xs border rounded p-2"
+                        placeholder="당신의 생년월일시,"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold mb-1">히어로 부제목 (Hero Subtitle)</label>
+                      <input
+                        type="text"
+                        value={siteConfig.homeHeroSubtitle || ''}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, homeHeroSubtitle: e.target.value }))}
+                        className="w-full text-xs border rounded p-2"
+                        placeholder="우주가 프로그래밍한 코드"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-semibold mb-1">히어로 버튼 텍스트 (Hero Button Text)</label>
+                      <input
+                        type="text"
+                        value={siteConfig.homeHeroButtonText || ''}
+                        onChange={(e) => setSiteConfig(c => ({ ...c!, homeHeroButtonText: e.target.value }))}
+                        className="w-full text-xs border rounded p-2"
+                        placeholder="사주 정보 탐색하기"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2 space-y-2">
+                      <label className="block text-xs font-semibold mb-1">히어로 대표 우측/전시 이미지 첨부 (Hero Banner Image)</label>
+                      
+                      <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border border-dashed border-slate-300 rounded-lg bg-white shadow-3xs">
+                        <div className="h-16 w-24 shrink-0 flex items-center justify-center border border-slate-200 bg-slate-50 rounded-lg overflow-hidden relative group">
+                          {siteConfig.homeHeroImage ? (
+                            <img 
+                              src={siteConfig.homeHeroImage} 
+                              alt="Hero Preview" 
+                              className="w-full h-full object-cover"
+                              referrerPolicy="no-referrer"
+                            />
+                          ) : (
+                            <span className="text-[10px] text-slate-400 font-medium">No Image</span>
+                          )}
+                        </div>
+
+                        <div className="flex-1 space-y-1.5 w-full text-center sm:text-left">
+                          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                            <label className="cursor-pointer bg-[#0B2240] text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-opacity-90 active:scale-95 transition-all inline-block shadow-3xs">
+                              파일 선택 (Choose Hero Image)
+                              <input 
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                      setSiteConfig(c => ({ ...c!, homeHeroImage: reader.result as string }));
+                                    };
+                                    reader.readAsDataURL(file);
+                                  }
+                                }}
+                              />
+                            </label>
+
+                            {siteConfig.homeHeroImage && (
+                              <button
+                                type="button"
+                                onClick={() => setSiteConfig(c => ({ ...c!, homeHeroImage: '' }))}
+                                className="border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded text-xs font-medium transition-all active:scale-95"
+                              >
+                                이미지 제거 (Delete)
+                              </button>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-slate-400 font-light font-sans">
+                            홈페이지 히어로 영역 우측에 아름답게 수필처럼 합성되어 노출될 가로형/오행 이미지를 등록합니다. (최대 1.5MB)
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* drag and drop support */}
+                      <div 
+                        className="border border-dashed border-slate-200 hover:border-amber-400 rounded-lg p-3 text-center cursor-pointer transition-all bg-white hover:bg-amber-50/20"
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const file = e.dataTransfer.files?.[0];
+                          if (file && file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setSiteConfig(c => ({ ...c!, homeHeroImage: reader.result as string }));
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      >
+                        <span className="text-[10px] text-slate-500 font-medium font-sans">
+                          여기에 이미지 파일을 드래그하여 드롭해도 대표 이미지가 등록됩니다. (Drag & Drop here)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* 상단 헤더 로고 커스터마이징 */}

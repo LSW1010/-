@@ -77,6 +77,16 @@ export default function ColumnView({ slug, navigate }: ColumnViewProps) {
                 className="group cursor-pointer bg-theme-bg p-6 sm:p-8 rounded-sm border border-theme-border hover:border-theme-accent shadow-sm hover:shadow-[4px_4px_0px_0px_rgba(125,90,80,0.8)] transition-all duration-200 flex flex-col justify-between"
               >
                 <div>
+                  {col.thumbnail && (
+                    <div className="w-full h-44 sm:h-56 overflow-hidden rounded-xs border border-theme-border/60 mb-5">
+                      <img 
+                        src={col.thumbnail} 
+                        alt={col.title} 
+                        className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-300"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                  )}
                   <div className="flex items-center justify-between text-[10px] text-theme-secondary mb-3 font-mono font-semibold">
                     <span className="text-theme-accent font-black tracking-widest font-serif">제 {columns.length - index} 첩</span>
                     <span className="flex items-center gap-1">
@@ -156,6 +166,18 @@ export default function ColumnView({ slug, navigate }: ColumnViewProps) {
               </span>
             </div>
           </div>
+
+          {/* Column Cover Image if attached */}
+          {column.thumbnail && (
+            <div className="my-8 rounded-sm overflow-hidden border border-theme-border shadow-xs max-h-[420px] w-full flex justify-center bg-theme-warm/20">
+              <img 
+                src={column.thumbnail} 
+                alt={column.title} 
+                className="w-full h-full object-cover" 
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          )}
 
           {/* Special Column Editorial Notes */}
           {column.notes && (

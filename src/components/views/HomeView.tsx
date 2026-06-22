@@ -1,6 +1,7 @@
 import React from 'react';
 import { BookOpen, Award, ArrowRight, CheckCircle2, Flame, Sparkles, AlertTriangle } from 'lucide-react';
 import { getSiteConfig, getPosts, getCategories, getColumns } from '../../data/db';
+import IlganWidget from './IlganWidget';
 
 interface HomeViewProps {
   navigate: (path: string, param?: string) => void;
@@ -30,39 +31,63 @@ export default function HomeView({ navigate }: HomeViewProps) {
           {/* Subtle geometric dot accent to evoke an ancient cosmic lattice map */}
           <div className="absolute inset-0 bg-[radial-gradient(#8C8279_1.2px,transparent_1.2px)] [background-size:24px_24px] opacity-[0.06]"></div>
           
-          <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col ${alignCenter ? 'items-center' : 'items-start'}`}>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-theme-warm border border-theme-border text-theme-accent text-[11px] font-bold tracking-wider uppercase mb-6 rounded-sm">
-              <Sparkles size={12} className="animate-pulse" />
-              미신을 넘어 인문학적 가치를 추구하는 명리학
-            </div>
-            
-            <h1 className="font-serif text-4xl sm:text-6xl font-black tracking-tight leading-[1.1] max-w-4xl mb-6 text-theme-text">
-              {config.homeHeroTitle || '당신의 생년월일시,'}<br />
-              {config.homeHeroSubtitle ? (
-                <span className="text-theme-accent font-serif font-black underline decoration-[4px] decoration-theme-border underline-offset-4">{config.homeHeroSubtitle}</span>
-              ) : (
-                <span className="text-theme-accent font-serif font-black underline decoration-[4px] decoration-theme-border underline-offset-4">우주가 프로그래밍한 코드</span>
-              )}{!config.homeHeroSubtitle && '를 해독합니다'}
-            </h1>
-            
-            <p className={`font-sans text-theme-secondary text-sm sm:text-base max-w-2xl mb-8 leading-relaxed font-semibold ${alignCenter ? 'text-center' : 'text-justify'}`}>
-              {config.tagline}. 사주공방은 단정형 공포 마케팅을 일절 배격하며, 오직 정통 고전 이론을 기반으로 당신 삶의 계절적 타이밍과 심리 장벽 극복안을 제시합니다.
-            </p>
+          <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col ${config.homeHeroImage ? 'lg:flex-row lg:items-center lg:justify-between' : (alignCenter ? 'items-center' : 'items-start')} gap-10`}>
+            {/* Left Column Content */}
+            <div className={`flex-1 flex flex-col ${config.homeHeroImage ? 'lg:max-w-[55%] text-left items-start' : (alignCenter ? 'items-center' : 'items-start')}`}>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-theme-warm border border-theme-border text-theme-accent text-[11px] font-bold tracking-wider uppercase mb-6 rounded-sm">
+                <Sparkles size={12} className="animate-pulse" />
+                미신을 넘어 인문학적 가치를 추구하는 명리학
+              </div>
+              
+              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] mb-6 text-theme-text">
+                {config.homeHeroTitle || '당신의 생년월일시,'}<br />
+                {config.homeHeroSubtitle ? (
+                  <span className="text-theme-accent font-serif font-black underline decoration-[4px] decoration-theme-border underline-offset-4">{config.homeHeroSubtitle}</span>
+                ) : (
+                  <span className="text-theme-accent font-serif font-black underline decoration-[4px] decoration-theme-border underline-offset-4">우주가 프로그래밍한 코드</span>
+                )}{!config.homeHeroSubtitle && '를 해독합니다'}
+              </h1>
+              
+              <p className={`font-sans text-theme-secondary text-sm sm:text-base mb-8 leading-relaxed font-semibold ${config.homeHeroImage ? 'text-justify' : (alignCenter ? 'text-center' : 'text-justify')} max-w-2xl`}>
+                {config.tagline}. 사주공방은 단정형 공포 마케팅을 일절 배격하며, 오직 정통 고전 이론을 기반으로 당신 삶의 계절적 타이밍과 심리 장벽 극복안을 제시합니다.
+              </p>
 
-            <div className={`flex flex-wrap gap-3 ${alignCenter ? 'justify-center' : ''}`}>
-              <button
-                onClick={() => navigate('categories')}
-                className="px-6 py-3.5 bg-theme-accent hover:bg-theme-text text-white font-sans text-xs font-bold tracking-wider uppercase rounded-sm cursor-pointer shadow-[3px_3px_0px_0px_rgba(45,41,38,1)] transition-all inline-flex items-center gap-2"
-              >
-                {config.homeHeroButtonText || '사주 정보 탐색하기'} <ArrowRight size={14} />
-              </button>
-              <button
-                onClick={() => navigate('author')}
-                className="px-6 py-3.5 bg-transparent hover:bg-theme-warm text-theme-text border-2 border-theme-text font-sans text-xs font-bold tracking-wider uppercase rounded-sm cursor-pointer transition-all"
-              >
-                상담사 & 운영 철학
-              </button>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => navigate('categories')}
+                  className="px-6 py-3.5 bg-theme-accent hover:bg-theme-text text-white font-sans text-xs font-bold tracking-wider uppercase rounded-sm cursor-pointer shadow-[3px_3px_0px_0px_rgba(45,41,38,1)] transition-all inline-flex items-center gap-2"
+                >
+                  {config.homeHeroButtonText || '사주 정보 탐색하기'} <ArrowRight size={14} />
+                </button>
+                <button
+                  onClick={() => navigate('author')}
+                  className="px-6 py-3.5 bg-transparent hover:bg-theme-warm text-theme-text border-2 border-theme-text font-sans text-xs font-bold tracking-wider uppercase rounded-sm cursor-pointer transition-all"
+                >
+                  상담사 & 운영 철학
+                </button>
+              </div>
             </div>
+
+            {/* Right Image Multi-media Attachment Column */}
+            {config.homeHeroImage && (
+              <div className="w-full lg:w-[40%] flex justify-center lg:justify-end animate-fade-in shrink-0">
+                <div className="relative group bg-theme-bg p-2 sm:p-3 border border-theme-border rounded-sm shadow-[8px_8px_0px_0px_rgba(125,90,80,0.85)] max-w-sm sm:max-w-md w-full overflow-hidden">
+                  <div className="aspect-4/3 w-full rounded-xs overflow-hidden border border-theme-border/60">
+                    <img 
+                      src={config.homeHeroImage} 
+                      alt="Saju Gongbang Space Accent" 
+                      className="w-full h-full object-cover select-none pointer-events-none group-hover:scale-102 transition-transform duration-500"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  {/* Small decorative label to keep editorial styling safe */}
+                  <div className="mt-3 flex items-center justify-between text-[10px] text-theme-secondary font-mono font-semibold">
+                    <span>사주공방 본 공간 정취 (經典 命理)</span>
+                    <span className="text-theme-accent font-bold">오행 조화 관측관</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -111,6 +136,9 @@ export default function HomeView({ navigate }: HomeViewProps) {
           </div>
         </section>
       )}
+
+      {/* 2.5 Interactive Ilgan (Daymaster) Analysis Widget */}
+      <IlganWidget navigate={navigate} />
 
       {/* 3. Representative Categories */}
       {config.homeShowCategories !== false && (
@@ -281,6 +309,16 @@ export default function HomeView({ navigate }: HomeViewProps) {
                     className="cursor-pointer group flex flex-col justify-between bg-theme-bg hover:bg-theme-warm/20 p-5 rounded-sm border border-theme-border hover:border-theme-accent transition-all duration-200"
                   >
                     <div>
+                      {post.thumbnail && (
+                        <div className="w-full h-32 rounded-xs overflow-hidden mb-3 border border-theme-border/60">
+                          <img 
+                            src={post.thumbnail} 
+                            alt={post.title} 
+                            className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-300"
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
+                      )}
                       {catObj && (
                         <span className="text-[9px] text-theme-accent bg-theme-warm rounded-sm px-2 py-0.5 tracking-wide font-bold mb-3 block w-fit border border-theme-border">
                           {catObj.name.split(' ')[0]}

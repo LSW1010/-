@@ -20,6 +20,7 @@ export interface Post {
   relatedSlugs?: string[];
   isFeatured?: boolean; // 추천 글 여부
   status: 'published' | 'draft';
+  thumbnail?: string; // base64 encoded attached image or URL
 }
 
 export interface Column {
@@ -35,6 +36,7 @@ export interface Column {
   notes?: string; // Column-specific personal thoughts
   checklist?: string[];
   status: 'published' | 'draft';
+  thumbnail?: string; // base64 encoded attached image or URL
 }
 
 export interface Category {
@@ -119,6 +121,7 @@ export interface SiteConfig {
   logoEmoji?: string;
   logoColor?: string;
   logoImage?: string; // base64 encoded custom image or url
+  homeHeroImage?: string; // base64 encoded custom hero banner or background image
 }
 
 export interface VisitTrend {

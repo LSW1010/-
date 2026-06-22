@@ -172,6 +172,18 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
             </div>
           </div>
 
+          {/* Post Cover Image if attached */}
+          {post.thumbnail && (
+            <div className="my-8 rounded-sm overflow-hidden border border-theme-border shadow-xs max-h-[420px] w-full flex justify-center bg-[#FAF7F2]">
+              <img 
+                src={post.thumbnail} 
+                alt={post.title} 
+                className="w-full h-full object-cover" 
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          )}
+
           {/* Dynamic Table of Contents (목차) */}
           {headings.length > 0 && (
             <div className="my-8 bg-[#FAF7F2] border border-theme-border p-5 rounded-sm">
