@@ -81,7 +81,8 @@ export function getPosts(): Post[] {
   if (cached) {
     try {
       const parsed = JSON.parse(cached);
-      if (parsed.length < 80) {
+      // Stale cache checking or length difference to force update to non-duplicate, June-enriched set
+      if (parsed.length < 130 || !parsed[0]?.title?.includes('목(木)')) {
         savePosts(initialPosts);
         return initialPosts;
       }
@@ -104,7 +105,7 @@ export function getColumns(): Column[] {
   if (cached) {
     try {
       const parsed = JSON.parse(cached);
-      if (parsed.length < 15) {
+      if (parsed.length < 15 || !parsed[0]?.title?.includes('해탈')) {
         saveColumns(initialColumns);
         return initialColumns;
       }

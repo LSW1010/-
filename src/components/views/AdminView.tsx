@@ -1969,6 +1969,17 @@ export default function AdminView({ onStateChange, navigate, initialAction }: Ad
                   />
                 </div>
 
+                <div>
+                  <label className="block text-xs font-semibold mb-1">통신판매업신고번호</label>
+                  <input
+                    type="text"
+                    value={siteConfig.mailOrderNumber || ''}
+                    onChange={(e) => setSiteConfig(c => ({ ...c!, mailOrderNumber: e.target.value }))}
+                    className="w-full text-xs border rounded p-2 font-mono"
+                    placeholder="예: 제 2026-서울노원-1234호 또는 노원 제1234"
+                  />
+                </div>
+
                 <div className="sm:col-span-2 mt-6 pt-6 border-t border-slate-150">
                   <h3 className="font-serif font-black text-xs sm:text-sm text-slate-900 mb-1 flex items-center gap-1.5 uppercase tracking-wider">
                     <Sparkles size={14} className="text-amber-500" />
