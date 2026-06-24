@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://sajugongbang.com/sitemap.xml
+Sitemap: https://sajugongbang.kr/sitemap.xml
