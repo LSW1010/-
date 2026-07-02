@@ -24,7 +24,7 @@ export default function TrustViews({ viewType, navigate }: TrustProps) {
     updateMetaTags(
       titles[viewType],
       `사주공방의 ${titles[viewType]} 페이지입니다. 신뢰를 최우선으로 투명하고 정직하게 사이트를 운영합니다.`,
-      `https://${config.siteUrl}/#/${viewType}`
+      `https://${config.siteUrl}/${viewType}`
     );
   }, [viewType, config]);
 

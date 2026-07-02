@@ -19,7 +19,7 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
   React.useEffect(() => {
     if (post) {
       // SEO & Structured data (JSON-LD)
-      const canonicalUrl = `https://${config.siteUrl}/#/posts/${post.slug}`;
+      const canonicalUrl = `https://${config.siteUrl}/posts/${post.slug}`;
       const articleSchema = generateArticleSchema(post, `https://${config.siteUrl}`);
       const faqSchema = post.faqs && post.faqs.length > 0 ? generateFAQSchema(post.faqs) : null;
       
@@ -35,7 +35,7 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
             faqSchema,
             generateBreadcrumbSchema([
               { name: '홈', url: `https://${config.siteUrl}/` },
-              { name: '카테고리', url: `https://${config.siteUrl}/#/categories` },
+              { name: '카테고리', url: `https://${config.siteUrl}/categories` },
               { name: post.title, url: canonicalUrl }
             ])
           ].filter(Boolean)

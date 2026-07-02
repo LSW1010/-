@@ -16,7 +16,7 @@ export default function AuthorView({ navigate }: AuthorViewProps) {
     updateMetaTags(
       '운영자 및 상담사 소개',
       `${config.ownerName} 대표의 명리학 수집 배경과 상담 원칙, 그리고 분야별 전속 고문 상담사들을 소개합니다.`,
-      `https://${config.siteUrl}/#/author`
+      `https://${config.siteUrl}/author`
     );
   }, [config]);
 

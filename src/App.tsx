@@ -14,21 +14,27 @@ import { setAdminLoggedIn, getSiteConfig, incrementVisit, incrementCategoryClick
 import { ShieldAlert, Compass } from 'lucide-react';
 
 export default function App() {
-  const [routeHash, setRouteHash] = React.useState(window.location.hash);
+  const [routePath, setRoutePath] = React.useState(window.location.pathname);
   const [updateTrigger, setUpdateTrigger] = React.useState(0);
 
-  // Synchronize routing state with brower hash
+  // Synchronize routing state with browser location/history
   React.useEffect(() => {
     // Initial visit count increment
     incrementVisit();
 
-    const handleHashChange = () => {
-      setRouteHash(window.location.hash);
+    // Support backwards compatibility for hash-based links (e.g. /#/about -> /about)
+    if (window.location.hash && window.location.hash.startsWith('#/')) {
+      const cleanPath = window.location.hash.substring(2); // remove '#/'
+      window.history.replaceState(null, '', '/' + cleanPath);
+      setRoutePath('/' + cleanPath);
+    }
+
+    const handleLocationChange = () => {
+      setRoutePath(window.location.pathname);
       incrementVisit();
 
       // Automatically increment category stats if navigating to a category
-      const rawHash = window.location.hash || '#/';
-      const path = rawHash.replace('#/', '').split('?')[0];
+      const path = window.location.pathname.replace(/^\//, '').split('?')[0];
       const segments = path.split('/');
       if (segments[0] === 'categories' && segments[1]) {
         incrementCategoryClick(segments[1]);
@@ -38,22 +44,19 @@ export default function App() {
       window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    // Initial check for hash redirects
-    if (!window.location.hash) {
-      window.location.hash = '#/';
-    } else {
-      // Check if deep link contains a category click
-      const rawHash = window.location.hash || '#/';
-      const path = rawHash.replace('#/', '').split('?')[0];
-      const segments = path.split('/');
-      if (segments[0] === 'categories' && segments[1]) {
-        incrementCategoryClick(segments[1]);
-      }
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('pushstate-navigate', handleLocationChange);
+
+    // Initial check if deep link contains a category click
+    const path = window.location.pathname.replace(/^\//, '').split('?')[0];
+    const segments = path.split('/');
+    if (segments[0] === 'categories' && segments[1]) {
+      incrementCategoryClick(segments[1]);
     }
 
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('pushstate-navigate', handleLocationChange);
     };
   }, []);
 
@@ -70,19 +73,22 @@ export default function App() {
 
   // Nav routing triggering helper
   const navigate = (viewName: string, param?: string) => {
+    let newPath = '/';
     if (viewName === 'home') {
-      window.location.hash = '#/';
+      newPath = '/';
     } else if (param) {
-      window.location.hash = `#/${viewName}/${param}`;
+      newPath = `/${viewName}/${param}`;
     } else {
-      window.location.hash = `#/${viewName}`;
+      newPath = `/${viewName}`;
     }
+
+    window.history.pushState(null, '', newPath);
+    window.dispatchEvent(new Event('pushstate-navigate'));
   };
 
   // Parsing current path segments
   const parseRoute = () => {
-    const rawHash = routeHash || '#/';
-    const path = rawHash.replace('#/', '').split('?')[0];
+    const path = routePath.replace(/^\//, '').split('?')[0];
     const segments = path.split('/');
 
     return {

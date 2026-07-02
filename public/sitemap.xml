@@ -1,9 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 메인 홈페이지 -->
   <url>
     <loc>https://sajugongbang.kr/</loc>
-    <lastmod>2026-06-24</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+
+  <!-- 소개 페이지 -->
+  <url>
+    <loc>https://sajugongbang.kr/about</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 상담사 및 집필진 소개 -->
+  <url>
+    <loc>https://sajugongbang.kr/author</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 사주 명리학 칼럼 목록 -->
+  <url>
+    <loc>https://sajugongbang.kr/columns</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- 칼럼 상세 글 1 -->
+  <url>
+    <loc>https://sajugongbang.kr/columns/column-saju-not-superstition</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 칼럼 상세 글 2 -->
+  <url>
+    <loc>https://sajugongbang.kr/columns/column-fate-and-character</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 칼럼 상세 글 3 -->
+  <url>
+    <loc>https://sajugongbang.kr/columns/column-timing-of-action</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 카테고리 정보 메인 -->
+  <url>
+    <loc>https://sajugongbang.kr/categories</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 카테고리 1: 음양오행 -->
+  <url>
+    <loc>https://sajugongbang.kr/categories/yin-yang-five-elements</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 카테고리 2: 사주구조 격국론 -->
+  <url>
+    <loc>https://sajugongbang.kr/categories/saju-structure</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 카테고리 3: 십성론 -->
+  <url>
+    <loc>https://sajugongbang.kr/categories/ten-gods</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 카테고리 4: 대운과 세운론 -->
+  <url>
+    <loc>https://sajugongbang.kr/categories/fortune-timing</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 카테고리 5: 궁합과 연애운 -->
+  <url>
+    <loc>https://sajugongbang.kr/categories/compatibility-love</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 문의하기 -->
+  <url>
+    <loc>https://sajugongbang.kr/contact</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- 사이트맵 -->
+  <url>
+    <loc>https://sajugongbang.kr/sitemap</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- 주요 게시글 상세: 목 기운 분석 -->
+  <url>
+    <loc>https://sajugongbang.kr/posts/wood-energy-analysis</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 주요 게시글 상세: 화 기운 분석 -->
+  <url>
+    <loc>https://sajugongbang.kr/posts/fire-energy-harmony</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

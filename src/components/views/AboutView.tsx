@@ -14,7 +14,7 @@ export default function AboutView({ navigate }: AboutProps) {
     updateMetaTags(
       '사주공방 소개 및 집필 신조',
       `정통 사주 정보 채널 사주공방의 운영 철학과 학술 자문단, 그리고 미신 없는 명리 분석론에 대한 장평의 소개 글입니다.`,
-      `https://${config.siteUrl}/#/about`
+      `https://${config.siteUrl}/about`
     );
   }, [config]);
 

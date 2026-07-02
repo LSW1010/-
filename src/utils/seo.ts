@@ -65,7 +65,7 @@ export function generateArticleSchema(post: Post, siteUrl: string): any {
     'author': {
       '@type': 'Person',
       'name': post.author,
-      'url': `${siteUrl}/#/author`
+      'url': `${siteUrl}/author`
     },
     'publisher': {
       '@type': 'Organization',

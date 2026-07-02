@@ -20,14 +20,14 @@ export default function ColumnView({ slug, navigate }: ColumnViewProps) {
       updateMetaTags(
         column.title,
         column.summary,
-        `https://${config.siteUrl}/#/columns/${column.slug}`,
+        `https://${config.siteUrl}/columns/${column.slug}`,
         'article'
       );
     } else {
       updateMetaTags(
         '사주공방 대표 칼럼 에세이',
         `${config.ownerName} 대표가 전하는 명리학 및 인생 성찰 에세이 전집입니다. 미신을 넘어 현대적인 해석의 깊이를 만나보세요.`,
-        `https://${config.siteUrl}/#/columns`
+        `https://${config.siteUrl}/columns`
       );
     }
   }, [column, config]);

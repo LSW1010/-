@@ -24,7 +24,7 @@ export default function ContactView({ navigate }: ContactViewProps) {
     updateMetaTags(
       '간담회 및 사주 상담 메일 문의',
       `사주공방 대표 상담사 팀에게 명리학적 고충 및 생년월일을 전해 검토 인명 분석 서면 회신을 요청하시는 문의 가이드입니다.`,
-      `https://${config.siteUrl}/#/contact`
+      `https://${config.siteUrl}/contact`
     );
   }, [config]);
 
