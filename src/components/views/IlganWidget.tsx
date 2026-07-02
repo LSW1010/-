@@ -398,8 +398,9 @@ export default function IlganWidget({ navigate }: IlganWidgetProps) {
                   </div>
 
                   {calendarType === 'lunar' && (
-                    <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+                    <label htmlFor="widget-leapmonth" className="inline-flex items-center gap-2 cursor-pointer select-none">
                       <input
+                        id="widget-leapmonth"
                         type="checkbox"
                         checked={isLeapMonth}
                         onChange={(e) => setIsLeapMonth(e.target.checked)}
@@ -414,8 +415,9 @@ export default function IlganWidget({ navigate }: IlganWidgetProps) {
 
                 <div className="grid grid-cols-3 gap-3 md:gap-5">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] text-theme-secondary font-bold tracking-wider uppercase">태어난 년도 {calendarType === 'solar' ? '(양력)' : '(음력)'}</label>
+                    <label htmlFor="widget-birthyear" className="text-[10px] text-theme-secondary font-bold tracking-wider uppercase">태어난 년도 {calendarType === 'solar' ? '(양력)' : '(음력)'}</label>
                     <select
+                      id="widget-birthyear"
                       value={birthYear}
                       onChange={(e) => setBirthYear(e.target.value)}
                       className="px-3 py-2.5 bg-theme-bg border border-theme-border text-theme-text font-serif font-black text-sm rounded-sm focus:border-theme-accent focus:outline-none transition cursor-pointer"
@@ -427,8 +429,9 @@ export default function IlganWidget({ navigate }: IlganWidgetProps) {
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] text-theme-secondary font-bold tracking-wider uppercase">태어난 월</label>
+                    <label htmlFor="widget-birthmonth" className="text-[10px] text-theme-secondary font-bold tracking-wider uppercase">태어난 월</label>
                     <select
+                      id="widget-birthmonth"
                       value={birthMonth}
                       onChange={(e) => setBirthMonth(e.target.value)}
                       className="px-3 py-2.5 bg-theme-bg border border-theme-border text-theme-text font-serif font-black text-sm rounded-sm focus:border-theme-accent focus:outline-none transition cursor-pointer"
@@ -440,8 +443,9 @@ export default function IlganWidget({ navigate }: IlganWidgetProps) {
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] text-theme-secondary font-bold tracking-wider uppercase">태어난 일</label>
+                    <label htmlFor="widget-birthday" className="text-[10px] text-theme-secondary font-bold tracking-wider uppercase">태어난 일</label>
                     <select
+                      id="widget-birthday"
                       value={birthDay}
                       onChange={(e) => setBirthDay(e.target.value)}
                       className="px-3 py-2.5 bg-theme-bg border border-theme-border text-theme-text font-serif font-black text-sm rounded-sm focus:border-theme-accent focus:outline-none transition cursor-pointer"

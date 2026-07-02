@@ -80,9 +80,9 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
       if (trimmed.startsWith('### ')) {
         const title = trimmed.replace('### ', '');
         return (
-          <h3 key={index} id={title} className="font-serif text-[15px] sm:text-base font-black text-theme-text mt-8 mb-3 border-l-4 border-theme-accent pl-3">
+          <h2 key={index} id={title} className="font-serif text-[15px] sm:text-base font-black text-theme-text mt-8 mb-3 border-l-4 border-theme-accent pl-3">
             {title}
-          </h3>
+          </h2>
         );
       }
       
@@ -187,10 +187,10 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
           {/* Dynamic Table of Contents (목차) */}
           {headings.length > 0 && (
             <div className="my-8 bg-[#FAF7F2] border border-theme-border p-5 rounded-sm">
-              <h4 className="font-serif text-xs font-black text-theme-text mb-3 flex items-center gap-1.5">
+              <h2 className="font-serif text-xs font-black text-theme-text mb-3 flex items-center gap-1.5">
                 <BookOpen size={14} className="text-theme-accent" />
                 이 글의 주요 목차
-              </h4>
+              </h2>
               <ul className="space-y-1.5">
                 {headings.map((heading, i) => (
                   <li key={i} className="text-[11px] sm:text-xs">
@@ -220,9 +220,9 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
 
           {/* Highlight Key Summary Box (핵심 요약 박스) */}
           <div className="my-10 bg-theme-warm border border-theme-border p-6 rounded-sm">
-            <h4 className="text-theme-accent font-serif text-xs sm:text-sm font-black mb-2 flex items-center gap-1.5">
+            <h2 className="text-theme-accent font-serif text-xs sm:text-sm font-black mb-2 flex items-center gap-1.5">
               💡 꼭 기억할 사주공방 핵심 포인트
-            </h4>
+            </h2>
             <p className="text-theme-secondary text-xs leading-relaxed font-semibold">
               본 글에서 설명하는 원리는 사적인 환경, 만세력 배치에 따라 달라집니다. 가장 핵심은 부정적 요소를 만났을 때 회피하는 것이 아니라, 부족함을 나의 오행 습성에서 파악하고 적극적으로 힐링 행동을 실천하는 것입니다.
             </p>
@@ -231,10 +231,10 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
           {/* Common Mistakes (초보자가 자주 실수하는 포인트) */}
           {post.mistakes && post.mistakes.length > 0 && (
             <div className="my-10 bg-theme-warm border-l-4 border-l-theme-accent border border-theme-border p-6 rounded-sm">
-              <h4 className="text-theme-text font-serif text-xs sm:text-sm font-black mb-3 flex items-center gap-1.5">
+              <h2 className="text-theme-text font-serif text-xs sm:text-sm font-black mb-3 flex items-center gap-1.5">
                 <AlertTriangle size={15} className="text-theme-accent" />
                 초보자가 자칫 오해하거나 실수하는 부분
-              </h4>
+              </h2>
               <ul className="space-y-2">
                 {post.mistakes.map((mis, i) => (
                   <li key={i} className="text-[#5A5045] text-xs flex items-start gap-2 leading-relaxed font-semibold">
@@ -249,10 +249,10 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
           {/* Checklist / Recap element */}
           {post.checklist && post.checklist.length > 0 && (
             <div className="my-10 bg-theme-warm border border-theme-border p-6 rounded-sm">
-              <h4 className="text-theme-accent font-serif text-xs sm:text-sm font-black mb-3 flex items-center gap-1.5">
+              <h2 className="text-theme-accent font-serif text-xs sm:text-sm font-black mb-3 flex items-center gap-1.5">
                 <ListChecks size={15} className="text-theme-accent" />
                 이것만큼은 챙기세요! 체크리스트
-              </h4>
+              </h2>
               <ul className="space-y-2">
                 {post.checklist.map((item, i) => (
                   <li key={i} className="text-[#3A3530] text-xs flex items-start gap-2 leading-relaxed font-semibold">
@@ -267,13 +267,13 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
           {/* FAQ Sections */}
           {post.faqs && post.faqs.length > 0 && (
             <div className="my-12 border-t border-theme-border pt-8">
-              <h4 className="font-serif text-base font-black text-theme-text mb-5">자주 묻는 질문 (FAQ)</h4>
+              <h2 className="font-serif text-base font-black text-theme-text mb-5">자주 묻는 질문 (FAQ)</h2>
               <div className="space-y-4">
                 {post.faqs.map((faq, i) => (
                   <div key={i} className="bg-[#FAF7F2] border border-theme-border rounded-sm p-5 shadow-xs">
-                    <h5 className="font-serif text-xs sm:text-[13px] font-black text-theme-text mb-2 flex gap-1.5">
+                    <h3 className="font-serif text-xs sm:text-[13px] font-black text-theme-text mb-2 flex gap-1.5">
                       <span className="text-theme-accent">Q.</span> {faq.question}
-                    </h5>
+                    </h3>
                     <p className="text-theme-secondary text-[11px] sm:text-xs leading-relaxed font-medium pl-4 border-l border-theme-accent/40">
                       {faq.answer}
                     </p>
@@ -307,9 +307,9 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
         {/* Natural Interconnected Links (관련글 리스트) */}
         {relatedPosts.length > 0 && (
           <div className="bg-[#FAF7F2] rounded-sm border border-theme-border p-6 sm:p-8 mt-6">
-            <h4 className="font-serif text-sm font-black text-theme-text mb-4 pb-2 border-b border-theme-border">
+            <h2 className="font-serif text-sm font-black text-theme-text mb-4 pb-2 border-b border-theme-border">
               이어서 읽어볼 만한 관련 글
-            </h4>
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {relatedPosts.map((rp) => (
                 <div
@@ -320,9 +320,9 @@ export default function PostDetailView({ slug, navigate }: PostDetailViewProps) 
                   }}
                   className="p-4 bg-theme-bg hover:bg-theme-warm/45 hover:border-theme-accent rounded-sm border border-theme-border cursor-pointer transition flex flex-col justify-between shadow-xs"
                 >
-                  <h5 className="font-serif font-black text-theme-text text-[11px] sm:text-xs line-clamp-2 leading-snug mb-1">
+                  <h3 className="font-serif font-black text-theme-text text-[11px] sm:text-xs line-clamp-2 leading-snug mb-1">
                     {rp.title}
-                  </h5>
+                  </h3>
                   <p className="text-[10px] text-theme-secondary font-semibold truncate mt-2">
                     업데이트: {rp.updateDate}
                   </p>

@@ -32,7 +32,7 @@ export default function Footer({ navigate }: FooterProps) {
 
           {/* Col 2: Major Navigation links */}
           <div>
-            <h4 className="text-theme-text text-xs font-bold mb-3 tracking-widest uppercase font-serif border-b border-theme-border/60 pb-1 inline-block">콘텐츠 목록</h4>
+            <p className="text-theme-text text-xs font-bold mb-3 tracking-widest uppercase font-serif border-b border-theme-border/60 pb-1 inline-block">콘텐츠 목록</p>
             <ul className="space-y-2">
               <li>
                 <button onClick={() => navigate('columns')} className="hover:text-theme-accent hover:underline transition font-medium text-left">
@@ -59,7 +59,7 @@ export default function Footer({ navigate }: FooterProps) {
 
           {/* Col 3: Compliance & Privacy policies */}
           <div>
-            <h4 className="text-theme-text text-xs font-bold mb-3 tracking-widest uppercase font-serif border-b border-theme-border/60 pb-1 inline-block">정책 및 신뢰</h4>
+            <p className="text-theme-text text-xs font-bold mb-3 tracking-widest uppercase font-serif border-b border-theme-border/60 pb-1 inline-block">정책 및 신뢰</p>
             <ul className="space-y-2">
               <li>
                 <button onClick={() => navigate('privacy')} className="hover:text-theme-accent hover:underline transition font-medium text-left">

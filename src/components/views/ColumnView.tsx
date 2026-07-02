@@ -198,9 +198,9 @@ export default function ColumnView({ slug, navigate }: ColumnViewProps) {
               if (trimmed.startsWith('### ')) {
                 const title = trimmed.replace('### ', '');
                 return (
-                  <h3 key={index} className="font-serif text-[14px] sm:text-base font-black text-theme-text mt-10 mb-4 text-center">
+                  <h2 key={index} className="font-serif text-[14px] sm:text-base font-black text-theme-text mt-10 mb-4 text-center">
                     ─ {title} ─
-                  </h3>
+                  </h2>
                 );
               }
 
@@ -215,7 +215,7 @@ export default function ColumnView({ slug, navigate }: ColumnViewProps) {
           {/* Checklist Recap if exists */}
           {column.checklist && column.checklist.length > 0 && (
             <div className="mt-10 pt-8 border-t border-dashed border-theme-border">
-              <h4 className="font-serif text-xs sm:text-sm font-black text-theme-text mb-3">대표와 함께 새기는 다짐 체크리스트:</h4>
+              <h2 className="font-serif text-xs sm:text-sm font-black text-theme-text mb-3">대표와 함께 새기는 다짐 체크리스트:</h2>
               <ul className="space-y-2">
                 {column.checklist.map((item, i) => (
                   <li key={i} className="text-[#3A3530] text-xs flex items-start gap-1.5 font-semibold">

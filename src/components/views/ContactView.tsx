@@ -82,8 +82,9 @@ export default function ContactView({ navigate }: ContactViewProps) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-theme-text mb-1.5">* 성함 (닉네임 가능)</label>
+                <label htmlFor="contact-name" className="block text-xs font-bold text-theme-text mb-1.5">* 성함 (닉네임 가능)</label>
                 <input
+                  id="contact-name"
                   type="text"
                   name="name"
                   value={formData.name}
@@ -95,8 +96,9 @@ export default function ContactView({ navigate }: ContactViewProps) {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-theme-text mb-1.5">* 회신받을 이메일 주소</label>
+                <label htmlFor="contact-email" className="block text-xs font-bold text-theme-text mb-1.5">* 회신받을 이메일 주소</label>
                 <input
+                  id="contact-email"
                   type="email"
                   name="email"
                   value={formData.email}
@@ -110,8 +112,9 @@ export default function ContactView({ navigate }: ContactViewProps) {
 
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-[#FAF7F2] p-4 rounded-sm border border-theme-border">
               <div className="sm:col-span-2">
-                <label className="block text-[11px] font-bold text-theme-text mb-1">생년월일 (음력/양력 구분)</label>
+                <label htmlFor="contact-birthdate" className="block text-[11px] font-bold text-theme-text mb-1">생년월일 (음력/양력 구분)</label>
                 <input
+                  id="contact-birthdate"
                   type="text"
                   name="birthdate"
                   value={formData.birthdate}
@@ -122,8 +125,9 @@ export default function ContactView({ navigate }: ContactViewProps) {
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-theme-text mb-1">태어난 시간 (시분)</label>
+                <label htmlFor="contact-birthtime" className="block text-[11px] font-bold text-theme-text mb-1">태어난 시간 (시분)</label>
                 <input
+                  id="contact-birthtime"
                   type="text"
                   name="birthtime"
                   value={formData.birthtime}
@@ -134,8 +138,9 @@ export default function ContactView({ navigate }: ContactViewProps) {
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-theme-text mb-1">달력 구분</label>
+                <label htmlFor="contact-calendartype" className="block text-[11px] font-bold text-theme-text mb-1">달력 구분</label>
                 <select
+                  id="contact-calendartype"
                   name="calendarType"
                   value={formData.calendarType}
                   onChange={handleInputChange}
@@ -149,8 +154,9 @@ export default function ContactView({ navigate }: ContactViewProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-theme-text mb-1.5">* 고민 주안점 및 사연</label>
+              <label htmlFor="contact-content" className="block text-xs font-bold text-theme-text mb-1.5">* 고민 주안점 및 사연</label>
               <textarea
+                id="contact-content"
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
